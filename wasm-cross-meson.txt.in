@@ -1,0 +1,20 @@
+[host_machine]
+system = 'emscripten'
+cpu_family = 'wasm32'
+cpu = 'wasm32'
+endian = 'little'
+
+[binaries]
+# Apparently, with meson 1.3 we can use "@DIRNAME@" (a predefined token) but we current have 1.2.something
+c = '${EMSDK_ROOT}/emsdk/upstream/emscripten/emcc'
+cpp = '${EMSDK_ROOT}/emsdk/upstream/emscripten/em++'
+ar = '${EMSDK_ROOT}/emsdk/upstream/emscripten/emar'
+strip = '${EMSDK_ROOT}/emsdk/upstream/emscripten/emstrip'
+ld = '${EMSDK_ROOT}/emsdk/upstream/emscripten/emcc'
+
+[built-in options]
+c_args = ['-std=c11', '-fwasm-exceptions']
+c_link_args = ['-sEXPORT_ALL=1']
+cpp_args = ['-std=c++17', '-fwasm-exceptions']
+cpp_link_args = ['-sEXPORT_ALL=1']
+pkg_config_path = ['/usr/bin/']
