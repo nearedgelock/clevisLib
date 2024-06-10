@@ -9,35 +9,35 @@ The author needed to create both a compiled command line tools as well as a WebA
 A WASM binding layer was also added.
 
 ## Using
-In fact, this library is simply a submodule to other repositories. As such building is not necessary here. However, for testing, debugging and development purpose everthing required to build a basic test bed is provided.
+In fact, this library is simply a submodule to other repositories. As such building is not necessary here. However, for testing, debugging and development purpose everything required to build a basic test bed is provided.
 
 ### Dependencies
 The library requires a number of external module and are directly included herein via git's submodule OR via vcpkg (which itself in included as a submodule).
 
 ### Compiling the local test program
 ```bash
-make bootstrap
-make configure
+make bootstrap    <-- Only on first time
+make configure    <-- If you change the cmake or related files. But before run make clean
 make build
 ```
 ### Cross-compiling wiht emscripten
 This is primarily to validate compilation. A JS file is generated and could be imported into your test code.
 
-The first step is to setup the emscripten cross-compile. This is requried only once (or after an update of the cross-compiler). Use
+The first step is to setup the emscripten cross-compiler. This is required only once (or after an update of the cross-compiler). Use
 ```bash
 cd emsdk
 ./emsdk install latest
 ./emsdk activate latest
 ```
 
-Next, setup youer environment (mostly the PATh variable) using the emscripten provided script. Do this each time you open a terminal.
+Next, setup your environment (mostly the PATH variable) using the emscripten provided script. Do this each time you open a terminal.
 ```bash
 source ./emsdk_env.sh
 ```
 
 Lasty, to compile clevisLib, use
 ```bash
-make bootstrap
-make configureWASM
+make bootstrap        <-- Only on first time
+make configureWASM    <-- If you change the cmake or related files. But before run make clean
 make build
 ```
