@@ -24,13 +24,12 @@ set(MESON_SETUP_ARGS
   -Dbuild_static=true
   -Dbuild_dynamic=false
   -Dbuild_executable=false
-  --prefer-static
   --default-library=static
   --prefix=${INSTALL_DIR}
 )
 
 if(NATIVE)
-  list(APPEND MESON_SETUP_ARGS "--pkg-config-path=${CMAKE_CURRENT_BINARY_DIR}/vcpkg_installed/x86_64-linux/lib/pkgconfig")
+  list(APPEND MESON_SETUP_ARGS "--pkg-config-path=${CMAKE_CURRENT_BINARY_DIR}/vcpkg_installed/x64-linux/lib/pkgconfig")
 
 else()
   message(NOTICE "Preparing the meson machine file")
