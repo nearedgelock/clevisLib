@@ -1,0 +1,28 @@
+name: C/C++ CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    # VCPKG Bootstrap
+    - name: bootstrap vcpkg
+      run: make bootstrap
+
+    # Run the cmake setup for a Natve build
+    - name: CMake setup
+      run: make configureNative
+
+    # Build it!
+    - name: Build
+      run: make build
+
