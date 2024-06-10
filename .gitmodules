@@ -1,0 +1,12 @@
+[submodule "vcpkg"]
+	path = vcpkg
+	url = https://github.com/Microsoft/vcpkg.git
+	branch = master
+[submodule "emsdk"]
+	path = emsdk
+	url = https://github.com/emscripten-core/emsdk.git
+	branch = main
+[submodule "jose"]
+	path = jose
+	url = git@github.com:clauderobi/jose.git
+	branch = master
