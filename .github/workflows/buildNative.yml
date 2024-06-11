@@ -12,12 +12,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-
-    - name: Update vcpkg submodule
-      run: git submodule update --init --recursive -v
     - uses: actions/checkout@v4
       with:
         submodules: true
+
+    - name: Update vcpkg submodule
+      run: git submodule update --init --recursive -v        
 
     - name: Install cmake
       run: sudo apt-get update && sudo apt-get -y install cmake meson
