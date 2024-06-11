@@ -14,10 +14,10 @@ jobs:
     steps:
     - uses: actions/checkout@v4
       with:
-        submodules: true
+        submodules: recursive
 
-    - name: Update vcpkg submodule
-      run: git submodule update --init --recursive -v        
+    - name: List submodules
+      run: git submodule status     
 
     - name: Install cmake
       run: sudo apt-get update && sudo apt-get -y install cmake meson
