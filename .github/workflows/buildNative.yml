@@ -29,7 +29,7 @@ jobs:
     # Run the cmake setup for a Natve build
     - name: CMake setup
       run: |
-        make configure
+        make configureDebug
         steps.continue_on_error
 
     - name: Show vcpkg log
