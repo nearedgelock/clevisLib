@@ -28,7 +28,12 @@ jobs:
 
     # Run the cmake setup for a Natve build
     - name: CMake setup
-      run: make configure
+      run: |
+        make configure
+        steps.continue_on_error
+
+    - name: Show vcpkg log
+      run: cat /home/runner/work/clevisLib/clevisLib/build/vcpkg-manifest-install.log
 
     # Build it!
     - name: Build
