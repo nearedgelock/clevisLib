@@ -12,13 +12,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Convert to Full Clone (vcpkg needs this)
-      run: git fetch --unshallow
-
     - uses: actions/checkout@v4
       with:
         submodules: recursive
 
+    - name: Convert to Full Clone (vcpkg needs this)
+      run: git fetch --unshallow
+      
     #- name: List submodules
     #  run: git submodule status     
 
