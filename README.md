@@ -17,7 +17,8 @@ The library requires a number of external module and are directly included herei
 ### Compiling the local test program
 ```bash
 make bootstrap    <-- Only on first time
-make configure    <-- If you change the cmake or related files. But before run make clean
+make clean        <-- Not necessary when the first time
+make configure    <-- First time, or if you change any of the cmake related files.
 make build
 ```
 ### Cross-compiling wiht emscripten
@@ -35,9 +36,10 @@ Next, setup your environment (mostly the PATH variable) using the emscripten pro
 source ./emsdk_env.sh
 ```
 
-Lasty, to compile clevisLib, use
+Lasty, to compile clevisLib for inclusion into a WASM project, use
 ```bash
 make bootstrap        <-- Only on first time
-make configureWASM    <-- If you change the cmake or related files. But before run make clean
+make clean            <-- Not necessary when the first time
+make configureWASM    <-- First time, or if you change any of the cmake related files.
 make build
 ```
