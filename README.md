@@ -12,7 +12,7 @@ A WASM binding layer was also added.
 In fact, this library is simply a submodule to other repositories. As such building is not necessary here. However, for testing, debugging and development purpose everything required to build a basic test bed is provided.
 
 ### Dependencies
-The library requires a number of external module and are directly included herein via git's submodule OR via vcpkg (which itself in included as a submodule).
+The library requires a number of external module and are directly included herein via git's submodule OR via vcpkg (which itself is included as a submodule).
 
 ### Compiling the local test program
 ```bash
@@ -21,7 +21,7 @@ make clean        <-- Not necessary when the first time
 make configure    <-- First time, or if you change any of the cmake related files.
 make build
 ```
-### Cross-compiling wiht emscripten
+### Cross-compiling with emscripten
 This is primarily to validate compilation. A JS file is generated and could be imported into your test code.
 
 The first step is to setup the emscripten cross-compiler. This is required only once (or after an update of the cross-compiler). Use

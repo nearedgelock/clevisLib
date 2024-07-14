@@ -20,8 +20,15 @@ else()
 endif()
 
 project(clevisLib VERSION 0.0.1)
-add_compile_options(-fexceptions)  # Add support for exception  
-add_executable(${CMAKE_PROJECT_NAME})
+add_compile_options(-fexceptions)  # Add support for exception
+if (BUILD_EXECUTABLE)
+  add_executable(${CMAKE_PROJECT_NAME})
+else()
+  add_library(${CMAKE_PROJECT_NAME})
+endif()
+
+include(cmake/addExternal.cmake)
+#message(FATAL_ERROR "Stop requested")
 
 include (jose.cmake)
 
@@ -30,7 +37,7 @@ find_package(ZLIB REQUIRED)
 find_package(OpenSSL REQUIRED)
 
 set(CMAKE_SIZEOF_VOID_P "")   # Required to avoid a failure with jansson when check for 32/64 bitness. Hopefully this is not impactful
-find_package(jansson REQUIRED)
+#find_package(jansson REQUIRED)
 
 # Define final WASM module (static library)
 if (WEB_TARGET)
@@ -41,7 +48,7 @@ endif()
 add_subdirectory(src)
 
 # Link sublibraries
-target_link_libraries(${CMAKE_PROJECT_NAME} ${JOSE_INCLUDE_OBJECT} Botan::Botan-static libjose_static jansson::jansson ZLIB::ZLIB OpenSSL::Crypto)
+target_link_libraries(${CMAKE_PROJECT_NAME} ${JOSE_INCLUDE_OBJECT} Botan::Botan-static libjose_static jansson zlibstatic OpenSSL::Crypto)
 
 if (NATIVE)
   #set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES LINK_FLAGS)
