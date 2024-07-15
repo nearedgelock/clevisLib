@@ -81,6 +81,9 @@ link_directories(${jose_BINARY_DIR}/lib)
 add_library(libjose_static STATIC IMPORTED)
 set_target_properties(libjose_static PROPERTIES IMPORTED_LOCATION ${jose_BINARY_DIR}/lib/libjose_static.a)
 set_target_properties(libjose_static PROPERTIES LINK_WHOLE_ARCHIVE true)
+set_target_properties(libjose_static PROPERTIES
+    INTERFACE_INCLUDE_DIRECTORIES "${jose_BINARY_DIR}/install/include"
+)
 
 set (JOSE_INCLUDE_OBJECT 
   "${jose_BINARY_DIR}/lib/libjose_static.a.p/openssl_aesgcm.c.o"

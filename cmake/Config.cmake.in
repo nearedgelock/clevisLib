@@ -1,0 +1,14 @@
+@PACKAGE_INIT@
+
+include("${CMAKE_CURRENT_LIST_DIR}/${CMAKE_PROJECT_NAME}Targets.cmake")
+
+set_and_check(JOSE_LIBRARY_FILE "@PACKAGE_CMAKE_INSTALL_LIBDIR@/libjose_static.a")
+if(NOT TARGET jose::jose)
+    add_library(jose::jose STATIC IMPORTED)
+    set_target_properties(jose::jose PROPERTIES
+        IMPORTED_LOCATION "${JOSE_LIBRARY_FILE}"
+        INTERFACE_INCLUDE_DIRECTORIES "@PACKAGE_CMAKE_INSTALL_INCLUDEDIR@"
+    )
+endif()
+
+check_required_components(@PROJECT_NAME@)

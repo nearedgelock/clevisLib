@@ -65,7 +65,7 @@ add_subdirectory(src)
 # clevisLib target adjustment - Note that JOSE_INCLUDE_OBJECT is a list of objects that MUST always be linked, despite their symbol not being called for others
 #
 # Link sublibraries
-target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE {JOSE_INCLUDE_OBJECT}
+target_link_libraries(${CMAKE_PROJECT_NAME} PUBLIC {JOSE_INCLUDE_OBJECT}
   libjose_static
 )
 
@@ -110,11 +110,33 @@ if (NOT BUILD_EXECUTABLE)
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/
   )
 
+  install(FILES ${jose_BINARY_DIR}/lib/libjose_static.a
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    COMPONENT Development
+  )
+
+  # Install jose headers
+  install(DIRECTORY ${INSTALL_DIR}/include/jose
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    COMPONENT Development
+  )
   # Install the export set for use with the install-tree
   install(EXPORT ${CMAKE_PROJECT_NAME}Targets
     FILE ${CMAKE_PROJECT_NAME}Targets.cmake
     NAMESPACE ${CMAKE_PROJECT_NAME}::
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${CMAKE_PROJECT_NAME}
     EXPORT_LINK_INTERFACE_LIBRARIES
+  ) 
+
+  # Create and install the Config file
+  include(CMakePackageConfigHelpers)
+  configure_package_config_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Config.cmake.in
+    "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_PROJECT_NAME}Config.cmake"
+    INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${CMAKE_PROJECT_NAME}
+  )
+
+  install(FILES
+    "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_PROJECT_NAME}Config.cmake"
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${CMAKE_PROJECT_NAME}
   )
 endif()
