@@ -41,7 +41,7 @@ if(NOT botan_POPULATED)
        message(FATAL_ERROR \"Botan configuration failed\")
      endif()
      execute_process(
-       COMMAND make -j8
+       COMMAND make -j18
        WORKING_DIRECTORY ${botan_SOURCE_DIR}
        RESULT_VARIABLE BOTAN_BUILD_RESULT
      )

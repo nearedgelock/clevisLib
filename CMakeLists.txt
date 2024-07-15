@@ -1,37 +1,48 @@
 cmake_minimum_required(VERSION 3.22)
 
+set(CLEVISLIB_MAIN_PROJECT OFF)
+if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
+  set(CLEVISLIB_MAIN_PROJECT ON)
+endif()
+
 # Options
-option(BUILD_EXECUTABLE "Build an executable binary " ON)
-option(NATIVE "Build using the native / local compiler" OFF)
+if(CLEVISLIB_MAIN_PROJECT)
+  set(BUILD_EXECUTABLE_DEFAULT OFF)
+  set(NATIVE_DEFAULT ON)
+else()
+  set(BUILD_EXECUTABLE_DEFAULT ON)
+  set(NATIVE_DEFAULT OFF)
+endif()
+
+option(BUILD_EXECUTABLE "Build an executable binary" ${BUILD_EXECUTABLE_DEFAULT})
+option(NATIVE "Build using the native / local compiler" ${NATIVE_DEFAULT})
 
 set(CMAKE_CXX_STANDARD 20)
 
-set(VCPKG_ROOT vcpkg)
+#
+# Top level stuff 
+#
 
 if (NATIVE)
   message (NOTICE "Performing a native build")
 else()
   message (NOTICE "Performing a cross build (emscripten)")
-  set(VCPKG_DEFAULT_TRIPLET "wasm32-emscripten" CACHE STRING "")
-  set(VCPKG_CHAINLOAD_TOOLCHAIN_FILE "${CMAKE_CURRENT_SOURCE_DIR}/emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake" CACHE STRING "")
-  set(VCPKG_TARGET_TRIPLET "wasm32-emscripten" CACHE STRING "")
-
   set(EMSDK_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
 endif()
 
 project(clevisLib VERSION 0.0.1)
-add_compile_options(-fexceptions)  # Add support for exception
+add_compile_options(-fexceptions)  # Add support for exception (usefull mostly for emscripten but does not hurt otherwise)
 if (BUILD_EXECUTABLE)
   add_executable(${CMAKE_PROJECT_NAME})
 else()
   add_library(${CMAKE_PROJECT_NAME})
 endif()
 
+#
+# Add the various libraries, either directly (jose) or as a package
+#
 include(cmake/addExternal.cmake)
-#message(FATAL_ERROR "Stop requested")
-
 include (jose.cmake)
-
 find_package(Botan REQUIRED)
 find_package(ZLIB REQUIRED)
 find_package(OpenSSL REQUIRED)
@@ -45,14 +56,65 @@ if (WEB_TARGET)
   add_definitions(-DWEB_TARGET)
 endif()
 
+#
+# Our sources
+#
 add_subdirectory(src)
 
+#
+# clevisLib target adjustment - Note that JOSE_INCLUDE_OBJECT is a list of objects that MUST always be linked, despite their symbol not being called for others
+#
 # Link sublibraries
-target_link_libraries(${CMAKE_PROJECT_NAME} ${JOSE_INCLUDE_OBJECT} Botan::Botan-static libjose_static jansson zlibstatic OpenSSL::Crypto)
+target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE {JOSE_INCLUDE_OBJECT}
+  libjose_static
+)
+
+target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE {JOSE_INCLUDE_OBJECT}
+  $<LINK_ONLY:zlibstatic>
+  $<LINK_ONLY:jansson>
+  $<LINK_ONLY:Botan::Botan-static>
+  $<LINK_ONLY:OpenSSL::Crypto>
+)
 
 if (NATIVE)
   #set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES LINK_FLAGS)
 else()
   # Set WASM target - For browser
   set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES LINK_FLAGS "-fexceptions -lembind -s WASM=1 -s MODULARIZE=1 -s ENVIRONMENT=\"web\" -sASSERTIONS -s EXPORT_NAME=\"createModule\"")
+endif()
+
+#
+# Installation - Only when we are a library
+# 
+if (NOT BUILD_EXECUTABLE)
+  include(GNUInstallDirs)
+
+  set_property(TARGET zlibstatic PROPERTY EXCLUDE_FROM_ALL TRUE)
+  set_property(TARGET zlibstatic PROPERTY EXCLUDE_FROM_DEFAULT_BUILD TRUE)
+  set_property(TARGET jansson PROPERTY EXCLUDE_FROM_ALL TRUE)
+  set_property(TARGET jansson PROPERTY EXCLUDE_FROM_DEFAULT_BUILD TRUE)
+
+  install(TARGETS ${CMAKE_PROJECT_NAME}
+    EXPORT ${CMAKE_PROJECT_NAME}Targets
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT Runtime
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT Development
+    INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+  )
+
+  install(FILES
+    src/clevisDecrypt.h
+    src/clevisEncrypt.h
+    src/jose/joseClevisDecrypt.h
+    src/jose/joseClevisEncrypt.h
+
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/
+  )
+
+  # Install the export set for use with the install-tree
+  install(EXPORT ${CMAKE_PROJECT_NAME}Targets
+    FILE ${CMAKE_PROJECT_NAME}Targets.cmake
+    NAMESPACE ${CMAKE_PROJECT_NAME}::
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${CMAKE_PROJECT_NAME}
+    EXPORT_LINK_INTERFACE_LIBRARIES
+  )
 endif()

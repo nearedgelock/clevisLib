@@ -14,15 +14,14 @@ bootstrap:
 .PHONY: clean
 clean:
 	rm -rf build
-	rm -rf vcpkg/buildtrees
 
 .PHONY: configureDebug
 configureDebug:
-	@$(CMAKE) -S . -B build -DCMAKE_VERBOSE_MAKEFILE=ON -D CMAKE_BUILD_TYPE=Debug -DNATIVE=ON -DBUILD_EXECUTABLE=Off
+	@$(CMAKE) -S . -B build -DCMAKE_VERBOSE_MAKEFILE=ON -D CMAKE_BUILD_TYPE=Debug -DNATIVE=ON -DBUILD_EXECUTABLE=Off -DCMAKE_INSTALL_PREFIX=build/install
 
 .PHONY: configure
 configure:
-	@$(CMAKE) -S . -B build -D CMAKE_BUILD_TYPE=Release -DNATIVE=ON -DBUILD_EXECUTABLE=On
+	@$(CMAKE) -S . -B build -D CMAKE_BUILD_TYPE=Release -DNATIVE=ON -DBUILD_EXECUTABLE=On -DCMAKE_INSTALL_PREFIX=build/install
 
 .PHONY: configureWASMDebug
 configureWASMDebug:
@@ -35,4 +34,8 @@ configureWASM:
 .PHONY: build
 build:
 	@$(CMAKE) --build build
+
+.PHONY: install
+install:
+	@$(CMAKE) --install build
 
