@@ -102,8 +102,10 @@ if (NOT BUILD_EXECUTABLE AND NOT WEB_TARGET)
   )
 
   install(FILES
+    src/clevisLib.h
     src/clevisDecrypt.h
     src/clevisEncrypt.h
+    src/jose/joseCommon.h    
     src/jose/joseClevisDecrypt.h
     src/jose/joseClevisEncrypt.h
 

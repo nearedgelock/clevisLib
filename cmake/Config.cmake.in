@@ -12,18 +12,18 @@ if(NOT TARGET libjose_static)
     )
 endif()
 
-include(CMakeFindDependencyMacro)
-find_dependency(ZLIB REQUIRED)
-find_dependency(jansson REQUIRED)
-find_dependency(Botan REQUIRED)
-find_dependency(OpenSSL REQUIRED)
+#include(CMakeFindDependencyMacro)
+#find_dependency(ZLIB REQUIRED)
+#find_dependency(jansson REQUIRED)
+#find_dependency(Botan REQUIRED)
+#find_dependency(OpenSSL REQUIRED)
 
 # Re-establish the link dependencies
 set_property(TARGET clevisLib::clevisLib APPEND PROPERTY
   INTERFACE_LINK_LIBRARIES 
-    ZLIB::ZLIB
+    zlib
     jansson::jansson
-    Botan::Botan
+    Botan::Botan-static
     OpenSSL::Crypto
 )
 
