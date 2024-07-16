@@ -70,10 +70,10 @@ target_link_libraries(${CMAKE_PROJECT_NAME} PUBLIC
   
 )
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE
-  $<LINK_ONLY:zlibstatic>
-  $<LINK_ONLY:jansson>
+  zlibstatic 
+  jansson
   Botan::Botan-static
-  $<LINK_ONLY:OpenSSL::Crypto>
+  OpenSSL::Crypto
 )
 
 if (NATIVE)
@@ -89,10 +89,10 @@ endif()
 if (NOT BUILD_EXECUTABLE AND NOT WEB_TARGET)
   include(GNUInstallDirs)
 
-  set_property(TARGET zlibstatic PROPERTY EXCLUDE_FROM_ALL TRUE)
-  set_property(TARGET zlibstatic PROPERTY EXCLUDE_FROM_DEFAULT_BUILD TRUE)
-  set_property(TARGET jansson PROPERTY EXCLUDE_FROM_ALL TRUE)
-  set_property(TARGET jansson PROPERTY EXCLUDE_FROM_DEFAULT_BUILD TRUE)
+  # Remove all libraries from the target and makes sure they are not included
+  # in tghe installation location, thus leaving full control on those to the
+  # other project.
+  set_property(TARGET ${CMAKE_PROJECT_NAME} PROPERTY INTERFACE_LINK_LIBRARIES "")
 
   install(TARGETS ${CMAKE_PROJECT_NAME}
     EXPORT ${CMAKE_PROJECT_NAME}Targets
@@ -130,8 +130,6 @@ if (NOT BUILD_EXECUTABLE AND NOT WEB_TARGET)
 
   # Create and install the Config file
   include(CMakePackageConfigHelpers)
-  #set(PACKAGE_CMAKE_INSTALL_LIBDIR ${CMAKE_INSTALL_LIBDIR})
-  #set(PACKAGE_CMAKE_INSTALL_INCLUDEDIR ${CMAKE_INSTALL_INCLUDEDIR})
   configure_package_config_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Config.cmake.in
     "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_PROJECT_NAME}Config.cmake"
     INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${CMAKE_PROJECT_NAME} 

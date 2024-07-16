@@ -12,15 +12,20 @@ if(NOT TARGET libjose_static)
     )
 endif()
 
-if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
-    set_property(TARGET libjose_static APPEND PROPERTY
-        INTERFACE_LINK_LIBRARIES 
-        "-Wl,--whole-archive $<TARGET_FILE:libjose_static> -Wl,--no-whole-archive")
-elseif(MSVC)
-    set_property(TARGET libjose_static APPEND PROPERTY
-        INTERFACE_LINK_LIBRARIES 
-        "/WHOLEARCHIVE:$<TARGET_FILE:libjose_static>")
-endif()
+include(CMakeFindDependencyMacro)
+find_dependency(ZLIB REQUIRED)
+find_dependency(jansson REQUIRED)
+find_dependency(Botan REQUIRED)
+find_dependency(OpenSSL REQUIRED)
+
+# Re-establish the link dependencies
+set_property(TARGET clevisLib::clevisLib APPEND PROPERTY
+  INTERFACE_LINK_LIBRARIES 
+    ZLIB::ZLIB
+    jansson::jansson
+    Botan::Botan
+    OpenSSL::Crypto
+)
 
 set(@PROJECT_NAME@_FOUND TRUE)
 check_required_components(@PROJECT_NAME@)
