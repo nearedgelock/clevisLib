@@ -1,14 +1,30 @@
 @PACKAGE_INIT@
 
-include("${CMAKE_CURRENT_LIST_DIR}/${CMAKE_PROJECT_NAME}Targets.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")
 
 set_and_check(JOSE_LIBRARY_FILE "@PACKAGE_CMAKE_INSTALL_LIBDIR@/libjose_static.a")
-if(NOT TARGET jose::jose)
-    add_library(jose::jose STATIC IMPORTED)
-    set_target_properties(jose::jose PROPERTIES
+
+if(NOT TARGET libjose_static)
+    add_library(libjose_static STATIC IMPORTED)
+    set_target_properties(libjose_static PROPERTIES
         IMPORTED_LOCATION "${JOSE_LIBRARY_FILE}"
         INTERFACE_INCLUDE_DIRECTORIES "@PACKAGE_CMAKE_INSTALL_INCLUDEDIR@"
     )
 endif()
 
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    set_property(TARGET libjose_static APPEND PROPERTY
+        INTERFACE_LINK_LIBRARIES 
+        "-Wl,--whole-archive $<TARGET_FILE:libjose_static> -Wl,--no-whole-archive")
+elseif(MSVC)
+    set_property(TARGET libjose_static APPEND PROPERTY
+        INTERFACE_LINK_LIBRARIES 
+        "/WHOLEARCHIVE:$<TARGET_FILE:libjose_static>")
+endif()
+
+set(@PROJECT_NAME@_FOUND TRUE)
 check_required_components(@PROJECT_NAME@)
+
+message (NOTICE "clevisLib generates 2 archive files: libclevisLib.a and libjose_static.a. The JOSE library")
+message (NOTICE "MUST be included completely when linking your executable. You must use the appropriate linker")
+message (NOTICE "flags, such as -Wl,--whole-archive and -Wl,--no-whole-archive")

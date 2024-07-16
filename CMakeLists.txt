@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.22)
+cmake_minimum_required(VERSION 3.24)
 
 set(CLEVISLIB_MAIN_PROJECT OFF)
 if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
@@ -7,11 +7,11 @@ endif()
 
 # Options
 if(CLEVISLIB_MAIN_PROJECT)
-  set(BUILD_EXECUTABLE_DEFAULT OFF)
+  set(BUILD_EXECUTABLE_DEFAULT ON)
   set(NATIVE_DEFAULT ON)
 else()
-  set(BUILD_EXECUTABLE_DEFAULT ON)
-  set(NATIVE_DEFAULT OFF)
+  set(BUILD_EXECUTABLE_DEFAULT OFF)
+  set(NATIVE_DEFAULT ON)
 endif()
 
 option(BUILD_EXECUTABLE "Build an executable binary" ${BUILD_EXECUTABLE_DEFAULT})
@@ -43,7 +43,7 @@ endif()
 #
 include(cmake/addExternal.cmake)
 include (jose.cmake)
-find_package(Botan REQUIRED)
+find_package(Botan REQUIRED PATHS ${botan_BINARY_DIR})
 find_package(ZLIB REQUIRED)
 find_package(OpenSSL REQUIRED)
 
@@ -65,14 +65,14 @@ add_subdirectory(src)
 # clevisLib target adjustment - Note that JOSE_INCLUDE_OBJECT is a list of objects that MUST always be linked, despite their symbol not being called for others
 #
 # Link sublibraries
-target_link_libraries(${CMAKE_PROJECT_NAME} PUBLIC {JOSE_INCLUDE_OBJECT}
-  libjose_static
+target_link_libraries(${CMAKE_PROJECT_NAME} PUBLIC
+ "-Wl,--whole-archive $<TARGET_OBJECTS:libjose_static>  -Wl,--no-whole-archive"
+  
 )
-
-target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE {JOSE_INCLUDE_OBJECT}
+target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE
   $<LINK_ONLY:zlibstatic>
   $<LINK_ONLY:jansson>
-  $<LINK_ONLY:Botan::Botan-static>
+  Botan::Botan-static
   $<LINK_ONLY:OpenSSL::Crypto>
 )
 
@@ -86,7 +86,7 @@ endif()
 #
 # Installation - Only when we are a library
 # 
-if (NOT BUILD_EXECUTABLE)
+if (NOT BUILD_EXECUTABLE AND NOT WEB_TARGET)
   include(GNUInstallDirs)
 
   set_property(TARGET zlibstatic PROPERTY EXCLUDE_FROM_ALL TRUE)
@@ -130,9 +130,14 @@ if (NOT BUILD_EXECUTABLE)
 
   # Create and install the Config file
   include(CMakePackageConfigHelpers)
+  #set(PACKAGE_CMAKE_INSTALL_LIBDIR ${CMAKE_INSTALL_LIBDIR})
+  #set(PACKAGE_CMAKE_INSTALL_INCLUDEDIR ${CMAKE_INSTALL_INCLUDEDIR})
   configure_package_config_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Config.cmake.in
     "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_PROJECT_NAME}Config.cmake"
-    INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${CMAKE_PROJECT_NAME}
+    INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${CMAKE_PROJECT_NAME} 
+    PATH_VARS
+      CMAKE_INSTALL_LIBDIR
+      CMAKE_INSTALL_INCLUDEDIR
   )
 
   install(FILES

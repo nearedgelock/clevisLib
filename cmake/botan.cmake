@@ -58,23 +58,22 @@ if(NOT botan_POPULATED)
      endif()"
   )
 
-  # Execute the Botan build script in a clean environment
-  execute_process(
-    COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/build_botan.cmake
-    RESULT_VARIABLE BOTAN_BUILD_SCRIPT_RESULT
-  )
-
-  if(NOT BOTAN_BUILD_SCRIPT_RESULT EQUAL 0)
-    message(FATAL_ERROR "Botan build script failed")
+  # Check if Botan is already built
+  if(NOT EXISTS "${botan_SOURCE_DIR}/libbotan-3.a")
+    # Execute the Botan build script in a clean environment
+    execute_process(
+      COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/build_botan.cmake
+      RESULT_VARIABLE BOTAN_BUILD_SCRIPT_RESULT
+    )
+  
+    if(NOT BOTAN_BUILD_SCRIPT_RESULT EQUAL 0)
+      message(FATAL_ERROR "Botan build script failed")
+    endif()
+  else()
+    message(STATUS "Botan already built, skipping build step")
   endif()
-
-  # Now try to find the installed Botan
-  set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} ${botan_BINARY_DIR})
-  find_package(botan REQUIRED)
 endif()
 
-# If everything worked, you should be able to use Botan targets now
-# target_link_libraries(your_target PRIVATE botan::botan)
 
 
 

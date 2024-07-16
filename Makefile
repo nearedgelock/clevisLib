@@ -7,25 +7,35 @@ CMAKE := /usr/bin/cmake
 
 default: build
 
-.PHONY: bootstrap
-bootstrap:
-	git submodule update --init vcpkg && vcpkg/bootstrap-vcpkg.sh --disableMetrics
+#
+# Clean up
+#	
+.PHONY: cleanAll
+cleanAll:
+	rm -rf build
+
+.PHONY: cleanOurs
+cleanOurs:
+	@find build -mindepth 1 -maxdepth 1 ! -name '_deps' -exec rm -rf {} +
 
 .PHONY: clean
-clean:
-	rm -rf build
+clean: cleanOurs	
+
+.PHONY: configureDebugLib
+configureDebugLib:
+	@$(CMAKE) -S . -B build -DCMAKE_VERBOSE_MAKEFILE=ON -D CMAKE_BUILD_TYPE=Debug -DNATIVE=ON -DBUILD_EXECUTABLE=OFF -DCMAKE_INSTALL_PREFIX=build/install
 
 .PHONY: configureDebug
 configureDebug:
-	@$(CMAKE) -S . -B build -DCMAKE_VERBOSE_MAKEFILE=ON -D CMAKE_BUILD_TYPE=Debug -DNATIVE=ON -DBUILD_EXECUTABLE=Off -DCMAKE_INSTALL_PREFIX=build/install
+	@$(CMAKE) -S . -B build -DCMAKE_VERBOSE_MAKEFILE=ON -D CMAKE_BUILD_TYPE=Debug -DNATIVE=ON -DBUILD_EXECUTABLE=ON
 
 .PHONY: configure
 configure:
-	@$(CMAKE) -S . -B build -D CMAKE_BUILD_TYPE=Release -DNATIVE=ON -DBUILD_EXECUTABLE=On -DCMAKE_INSTALL_PREFIX=build/install
+	@$(CMAKE) -S . -B build -D CMAKE_BUILD_TYPE=Release -DNATIVE=ON -DBUILD_EXECUTABLE=ON
 
 .PHONY: configureWASMDebug
 configureWASMDebug:
-	@$(EMCMAKE) cmake -S . -B build -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_EXE_LINKER_FLAGS=\"-static\"-D CMAKE_BUILD_TYPE=Debug -DWEB_TARGET=1 -DBUILD_EXECUTABLE=Off
+	@$(EMCMAKE) cmake -S . -B build -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_EXE_LINKER_FLAGS=\"-static\"-D CMAKE_BUILD_TYPE=Debug -DWEB_TARGET=1 -DBUILD_EXECUTABLE=OFF
 
 .PHONY: configureWASM
 configureWASM:
