@@ -105,11 +105,16 @@ if (NOT BUILD_EXECUTABLE AND NOT WEB_TARGET)
     src/clevisLib.h
     src/clevisDecrypt.h
     src/clevisEncrypt.h
+
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/
+  )
+
+  install(FILES
     src/jose/joseCommon.h    
     src/jose/joseClevisDecrypt.h
     src/jose/joseClevisEncrypt.h
 
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/jose/
   )
 
   install(FILES ${jose_BINARY_DIR}/lib/libjose_static.a

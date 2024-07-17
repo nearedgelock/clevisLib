@@ -2,8 +2,6 @@
 # Drive the josé build process - We need to complete this before we can add
 # its library to our main project.
 #
-# José has a dependency on jansson and zlib, which we assume are delivered by vcpkg.
-#
 
 set(jose_BINARY_DIR "${CMAKE_CURRENT_BINARY_DIR}/jose")
 set(INSTALL_DIR "${jose_BINARY_DIR}/install")
@@ -29,7 +27,7 @@ set(MESON_SETUP_ARGS
 )
 
 if(NATIVE)
-  list(APPEND MESON_SETUP_ARGS "--pkg-config-path=${CMAKE_CURRENT_BINARY_DIR}/vcpkg_installed/x64-linux/lib/pkgconfig")
+  #list(APPEND MESON_SETUP_ARGS "--pkg-config-path=${CMAKE_CURRENT_BINARY_DIR}/vcpkg_installed/x64-linux/lib/pkgconfig")
 
 else()
   message(NOTICE "Preparing the meson machine file")
@@ -39,7 +37,7 @@ else()
   file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/jose/wasm-cross-meson.txt" "${MACHINEFILE_OUT}")
 
   list(APPEND MESON_SETUP_ARGS "--cross-file=${CMAKE_CURRENT_BINARY_DIR}/jose/wasm-cross-meson.txt")
-  list(APPEND MESON_SETUP_ARGS "--pkg-config-path=${CMAKE_CURRENT_BINARY_DIR}/vcpkg_installed/wasm32-emscripten/lib/pkgconfig")
+  #list(APPEND MESON_SETUP_ARGS "--pkg-config-path=${CMAKE_CURRENT_BINARY_DIR}/vcpkg_installed/wasm32-emscripten/lib/pkgconfig")
 endif()
 
 message (NOTICE "meson arguments (for setup) are ${MESON_SETUP_ARGS}")
@@ -70,10 +68,17 @@ execute_process(
 
   RESULT_VARIABLE JOSE_INSTALL_RESULT
 )
-
 if(NOT ${JOSE_INSTALL_RESULT} EQUAL 0)
     message(FATAL_ERROR "Failed to build / install jose")
 endif()
+
+message (NOTICE "convert thin archive to regular / classic format")
+execute_process(
+  COMMAND sh -c "mv ${jose_BINARY_DIR}/lib/libjose_static.a ${jose_BINARY_DIR}/lib/libjose_static_thin.a | ar -t ${jose_BINARY_DIR}/lib/libjose_static_thin.a | xargs ar -qc ${jose_BINARY_DIR}/lib/libjose_static.a"
+  WORKING_DIRECTORY ${CMAKE_BINARY_DIR}  # Adjust this if needed
+  RESULT_VARIABLE RESULT
+
+)
 
 include_directories(${jose_BINARY_DIR}/install/include)
 link_directories(${jose_BINARY_DIR}/lib)
