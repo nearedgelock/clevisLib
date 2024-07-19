@@ -22,7 +22,7 @@
 #include "jose/joseCommon.h"
 #include "jose/joseClevisDecrypt.h"
 
-namespace wasmBinding {
+namespace binding {
 
   /// Abstract class for handling a complete decryption proceduire, except interaction with an external
   /// tang server.
@@ -86,7 +86,7 @@ namespace wasmBinding {
     void                                    freeJson();
   };
 
-} // namesapce wasmBinding
+} // namesapce binding
 
 
 

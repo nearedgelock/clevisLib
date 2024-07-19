@@ -16,8 +16,8 @@ jobs:
       with:
         submodules: recursive
 
-    - name: Convert to Full Clone (vcpkg needs this)
-      run: cd vcpkg && git fetch --unshallow  --tags && cd ..
+    #- name: Convert to Full Clone (vcpkg needs this)
+    #  run: cd vcpkg && git fetch --unshallow  --tags && cd ..
 
     #- name: List submodules
     #  run: git submodule status     

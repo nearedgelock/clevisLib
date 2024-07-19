@@ -25,10 +25,9 @@ extern "C" {
 #include "jose/jwe.h"
 }
 
-namespace wasmBinding {
+namespace binding {
   const std::string         decomposeAdvertisement(const std::string& adv);
 
-  const std::string         generateKey();
   const std::string         getServerKeyFromAdvertisement(const std::string& adv);
   json_t*                   prepareSealing(const std::string& adv, const std::string& url, json_t* cek);
   const std::string         sealSecret(const std::string& adv, const std::string& url, const std::string& secret);
@@ -72,7 +71,7 @@ namespace wasmBinding {
     std::size_t             ctl = 0;        // And its length
   };
 
-} // namesapce wasmBinding
+} // namesapce binding
 
 
 

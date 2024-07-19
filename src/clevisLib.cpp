@@ -21,9 +21,27 @@
 #include <stdlib.h>
 #include <iostream>
 
-namespace wasmBinding {
+namespace binding {
   
   bool      isLogEnabled = false;
+  bool      allowException = false;
+
+  const std::string generateKey() {
+    try {
+      json_auto_t*        key = joseLibWrapper::generateKey();
+
+      if (key != nullptr) {
+        const std::string   result = joseLibWrapper::prettyPrintJson(key);
+        return result;
+      } else {
+        return nullptr;
+      }
+    } catch (std::exception &exc) {
+      log("Top level exeception - " + std::string(exc.what()));
+      rethrowIfAllowed();
+      return "Got an exception";
+    }
+  }
 
   void log(const std::string& msg) {
     if (isLogEnabled) {
@@ -31,50 +49,50 @@ namespace wasmBinding {
     }
   };
 
-} // namespace wasmBinding
+} // namespace binding
 
 #ifdef WEB_TARGET
 EMSCRIPTEN_BINDINGS(clevisLib) {
-  emscripten::function("decomposeAdvertisement", &wasmBinding::decomposeAdvertisement);
-  emscripten::function("generateKey", &wasmBinding::generateKey);
-  emscripten::function("getServerKeyFromAdvertisement", &wasmBinding::getServerKeyFromAdvertisement);
-  emscripten::function("sealSecret", &wasmBinding::sealSecret);
-  emscripten::function("sealSecretVal", &wasmBinding::sealSecretVal);
+  emscripten::function("decomposeAdvertisement", &binding::decomposeAdvertisement);
+  emscripten::function("generateKey", &binding::generateKey);
+  emscripten::function("getServerKeyFromAdvertisement", &binding::getServerKeyFromAdvertisement);
+  emscripten::function("sealSecret", &binding::sealSecret);
+  emscripten::function("sealSecretVal", &binding::sealSecretVal);
 
-  emscripten::function("validateAdvertisement", &wasmBinding::validateAdvertisement);
+  emscripten::function("validateAdvertisement", &binding::validateAdvertisement);
 
-  emscripten::value_object<wasmBinding::returnWithStatus_t>("returnWithStatus_t")
-    .field("msg", &wasmBinding::returnWithStatus_t::msg)
-    .field("success", &wasmBinding::returnWithStatus_t::success)
+  emscripten::value_object<binding::returnWithStatus_t>("returnWithStatus_t")
+    .field("msg", &binding::returnWithStatus_t::msg)
+    .field("success", &binding::returnWithStatus_t::success)
     ;
 
-  emscripten::class_<wasmBinding::decrypt>("Decryptor")
+  emscripten::class_<binding::decrypt>("Decryptor")
     .constructor<const std::string, bool>()
-    .function("isPrintable", &wasmBinding::decrypt::isPrintable)
-	  .function("recoveryUrl", &wasmBinding::decrypt::recoveryUrl)
-    .function("transportKey", &wasmBinding::decrypt::transportKey)
-    .function("unSealSecret", &wasmBinding::decrypt::unSealSecret)
-    .function("secret", &wasmBinding::decrypt::secret)
-    .function("feedDataLargeVal", &wasmBinding::decrypt::feedDataLargeVal)
-    .function("setupLarge", &wasmBinding::decrypt::setupLarge)
-    .function("checkTag", &wasmBinding::decrypt::checkTag)
-    .function("getLeftOver", &wasmBinding::decrypt::getLeftOver)
-    .function("printInfo", &wasmBinding::decrypt::printInfo)
-    .function("getProtectedRawSize", &wasmBinding::decrypt::getProtectedRawSize)
-    .function("getIVRawSize", &wasmBinding::decrypt::getIVRawSize)
+    .function("isPrintable", &binding::decrypt::isPrintable)
+	  .function("recoveryUrl", &binding::decrypt::recoveryUrl)
+    .function("transportKey", &binding::decrypt::transportKey)
+    .function("unSealSecret", &binding::decrypt::unSealSecret)
+    .function("secret", &binding::decrypt::secret)
+    .function("feedDataLargeVal", &binding::decrypt::feedDataLargeVal)
+    .function("setupLarge", &binding::decrypt::setupLarge)
+    .function("checkTag", &binding::decrypt::checkTag)
+    .function("getLeftOver", &binding::decrypt::getLeftOver)
+    .function("printInfo", &binding::decrypt::printInfo)
+    .function("getProtectedRawSize", &binding::decrypt::getProtectedRawSize)
+    .function("getIVRawSize", &binding::decrypt::getIVRawSize)
     ;
 
-  emscripten::class_<wasmBinding::encryptLarge>("Encryptor")
+  emscripten::class_<binding::encryptLarge>("Encryptor")
     .constructor<const std::string, const std::string>()
-    .function("feedData", &wasmBinding::encryptLarge::feedData)
-    .function("feedDataVal", &wasmBinding::encryptLarge::feedDataVal)
-    .function("finalize", &wasmBinding::encryptLarge::finalize)
-    .function("getFinalJWE", &wasmBinding::encryptLarge::getFinalJWE)
-    .function("getJWEProtected", &wasmBinding::encryptLarge::getJWEProtected)
-    .function("getJWEIV", &wasmBinding::encryptLarge::getJWEIV)
-    .function("getJWECiphertext", &wasmBinding::encryptLarge::getJWECiphertext)
-    .function("getJWETag", &wasmBinding::encryptLarge::getJWETag)
-    .function("printInfo", &wasmBinding::decrypt::printInfo)
+    .function("feedData", &binding::encryptLarge::feedData)
+    .function("feedDataVal", &binding::encryptLarge::feedDataVal)
+    .function("finalize", &binding::encryptLarge::finalize)
+    .function("getFinalJWE", &binding::encryptLarge::getFinalJWE)
+    .function("getJWEProtected", &binding::encryptLarge::getJWEProtected)
+    .function("getJWEIV", &binding::encryptLarge::getJWEIV)
+    .function("getJWECiphertext", &binding::encryptLarge::getJWECiphertext)
+    .function("getJWETag", &binding::encryptLarge::getJWETag)
+    .function("printInfo", &binding::decrypt::printInfo)
     ;
 }
 #endif

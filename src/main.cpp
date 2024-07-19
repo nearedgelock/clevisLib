@@ -42,7 +42,7 @@ int main () {
   std::cout << "Hello from main.cpp!!" << std::endl;
   //testB64();
 
-  const std::string jwe = wasmBinding::sealSecret(testAdv,  "https://tang.nearedge-it.com/0123482c-0510-4227-a920-ba7aa83084c0", "Hello!!");
+  const std::string jwe = binding::sealSecret(testAdv,  "https://tang.nearedge-it.com/0123482c-0510-4227-a920-ba7aa83084c0", "Hello!!");
   std::cout << "The JWE is " << jwe << std::endl;
 
 
@@ -51,7 +51,7 @@ int main () {
 //
 
 
-wasmBinding::encryptLarge   jweLarge(testAdv,  "https://tang.nearedge-it.com/0123482c-0510-4227-a920-ba7aa83084c0");
+binding::encryptLarge   jweLarge(testAdv,  "https://tang.nearedge-it.com/0123482c-0510-4227-a920-ba7aa83084c0");
 std::stringstream           finalJWE;
 
 finalJWE << jweLarge.getJWEProtected() << jweLarge.getJWEIV();
@@ -63,7 +63,7 @@ std::cout << "The Final JWE (encrypted payload) is \n" << finalJWE.str() << std:
 
 json_t*                     cek = jweLarge.getCEK();
 
-wasmBinding::decrypt        decryptor(finalJWE.str(), true);
+binding::decrypt        decryptor(finalJWE.str(), true);
 decryptor.addCEK(cek);
 decryptor.setupLarge("");
 
@@ -94,7 +94,7 @@ const std::string           ephemeral2_pub = R"({"kty": "EC","crv": "P-521","x":
 const std::string           serverRecResponse2 = R"({"alg":"ECMR","crv":"P-521","key_ops":["deriveKey"],"kty":"EC","x":"AbWxSFBXqYLQhO2k1wAb9jhTFxEE1xSZ7MjGdSUhfKTRX7C9yUowsaA1ysFJz1fReP2VP6c8qJ5_kECCj6aVGk0L","y":"AEwMyBdou1FHeIp12zG9piwZHMEjxWVMpY4zQGIgqAeEMFAWCNZh4sFlrEOpy914DLsPDa6JknMtWJUzQF4XlcvV"})";
 
 // Test with the non stream mode to verify that the data above is valid
-wasmBinding::decrypt        decryptor(testJWE);
+binding::decrypt            decryptor(testJWE);
 decryptor.replaceTransportKey(ephemeral_pub, ephemeral_priv);
 std::cout << "Decrypted secret is \n" << decryptor.unSealSecret(serverRecResponse) << std::endl;
 
@@ -102,7 +102,7 @@ std::cout << "Decrypted secret is \n" << decryptor.unSealSecret(serverRecRespons
 std::deque<std::string>     decomposedJWE =  misc::split(testJWE2, '.');
 std::string                 partialJWE = decomposedJWE[0] + "." + decomposedJWE[1];
 
-wasmBinding::decrypt        decryptorStream(partialJWE, true);
+binding::decrypt            decryptorStream(partialJWE, true);
 decryptorStream.replaceTransportKey(ephemeral2_pub, ephemeral2_priv);
 decryptorStream.setupLarge(serverRecResponse2);
 

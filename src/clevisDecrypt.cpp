@@ -26,7 +26,7 @@ extern "C" {
 #include "jose/b64.h"
 }
 
-namespace wasmBinding {
+namespace binding {
   decrypt::decrypt(std::string jwe, bool streamMode ) {
     try {
       log("Constructing a decrypt object");
@@ -49,6 +49,7 @@ namespace wasmBinding {
       //transport.printInfo();
     } catch (std::exception& exc) {
       log("Exception while constructing decrypt - " + std::string(exc.what()));
+      rethrowIfAllowed();
     }
   }
 
@@ -91,6 +92,7 @@ namespace wasmBinding {
       //}
     } catch (std::exception& exc) {
       log("Exception while unsealing a secret - " + std::string(exc.what()));
+      rethrowIfAllowed();
       return {"No secret !!!", false};
     }
   }
@@ -139,6 +141,7 @@ namespace wasmBinding {
       return {retval, true};
     } catch(std::exception& exc) {
       log("Got a failure during feedDataLarge (streaming) - " + std::string(exc.what()));
+      rethrowIfAllowed();
       return {"Failure", false};
     }
   }
@@ -165,6 +168,7 @@ namespace wasmBinding {
       return {std::move(result), true};
     } catch (std::exception& exc) {
       log("Top level exception - " + std::string(exc.what()));
+      rethrowIfAllowed();
       return {"Got an exception", false};
     }
     }
@@ -236,6 +240,6 @@ namespace wasmBinding {
     jose_io_decref(output);
   }
 
-} // namesapce wasmBinding
+} // namesapce binding
 
 

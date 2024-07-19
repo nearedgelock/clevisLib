@@ -22,17 +22,24 @@
 #include <emscripten/bind.h>
 #endif
 
-namespace wasmBinding {
+namespace binding {
   extern bool       isLogEnabled;
+  extern bool       allowException;     // Top level function / methods could generate exceptions or returning normally.
+
+  inline void       enableLog() { isLogEnabled = true; };
+  inline void       enableException() { allowException = true; };
+  inline void       rethrowIfAllowed() { if (allowException == true) { throw; } };
 
   using returnWithStatus_t =    struct returnWithStatus {
                                   std::string   msg;
                                   bool          success;
                                 };
 
-  void              log(const std::string& msg);
+                                
+  const std::string         generateKey();
+  void                      log(const std::string& msg);
 
-} // namesapce wasmBinding
+} // namesapce binding
 
 
 

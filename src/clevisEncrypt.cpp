@@ -20,7 +20,7 @@
 #include <sstream>
 #include <iomanip>
 
-namespace wasmBinding {
+namespace binding {
   // The advertisement as received verbatim from the server. It is a serialize JSON string with just the payload element
   const std::string decomposeAdvertisement(const std::string& adv) {
     try {
@@ -28,22 +28,7 @@ namespace wasmBinding {
       return joseLibWrapper::prettyPrintJson(payload_j);
     } catch (std::exception& exc) {
       log("Top level exception - " + std::string(exc.what()));
-      return "Got an exception";
-    }
-  }
-
-  const std::string generateKey() {
-    try {
-      json_auto_t*        key = joseLibWrapper::generateKey();
-
-      if (key != nullptr) {
-        const std::string   result = joseLibWrapper::prettyPrintJson(key);
-        return result;
-      } else {
-        return nullptr;
-      }
-    } catch (std::exception &exc) {
-      log("Top level exeception - " + std::string(exc.what()));
+      rethrowIfAllowed();
       return "Got an exception";
     }
   }
@@ -59,6 +44,7 @@ namespace wasmBinding {
       return joseLibWrapper::prettyPrintJson(serverKey);
     } catch (std::exception& exc) {
       log("Top level exeception - " + std::string(exc.what()));
+      rethrowIfAllowed();
       return "Got an exception";
     }
   }
@@ -99,6 +85,7 @@ namespace wasmBinding {
       return joseLibWrapper::compact(jwe);
     } catch (std::exception& exc) {
       log("Top level exception - " + std::string(exc.what()));
+      rethrowIfAllowed();
       return "Got an exception";
     }
   }
@@ -126,6 +113,7 @@ namespace wasmBinding {
       return joseLibWrapper::compact(jwe);
     } catch (std::exception& exc) {
       log("Top level exception - " + std::string(exc.what()));
+      rethrowIfAllowed();
       return "Got an exception";
     }
   }
@@ -144,6 +132,7 @@ namespace wasmBinding {
       throw joseLibWrapper::invalidJson();
     } catch (std::exception& exc) {
       log("Top level exeception - " + std::string(exc.what()));
+      rethrowIfAllowed();
       return "Got an exception";      
     }
   }
@@ -169,6 +158,7 @@ namespace wasmBinding {
       }
     } catch (std::exception& exc) {
       log("Failed to create the encryptLarge object - " + std::string(exc.what()));
+      rethrowIfAllowed();
     }
   }
 
@@ -225,6 +215,7 @@ namespace wasmBinding {
       return ctPartialB64;
     } catch (std::exception& exc) {
       log("Top level exception - " + std::string(exc.what()));
+      rethrowIfAllowed();
       return "Got an exception";
     }
   }
@@ -273,7 +264,7 @@ namespace wasmBinding {
 
   }
 
-} // namesapce wasmBinding
+} // namesapce binding
 
 
 
