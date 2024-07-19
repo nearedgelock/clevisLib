@@ -16,18 +16,11 @@ jobs:
       with:
         submodules: recursive
 
-    #- name: Convert to Full Clone (vcpkg needs this)
-    #  run: cd vcpkg && git fetch --unshallow  --tags && cd ..
-
     #- name: List submodules
     #  run: git submodule status     
 
     - name: Install cmake
       run: sudo apt-get update && sudo apt-get -y install cmake meson
-
-    # VCPKG Bootstrap
-    - name: bootstrap vcpkg
-      run: make bootstrap
 
     # Run the cmake setup for a Natve build
     - name: CMake setup
