@@ -294,7 +294,7 @@ namespace joseLibWrapper {
   };
 
   void removePrivate(json_t* key) {
-    if (jose_jwk_pub(nullptr, key) == true) {
+    if ( (key != nullptr) and (jose_jwk_pub(nullptr, key) == true) ) {
       return ;
     }
     throw failRemovePriv();

@@ -54,7 +54,7 @@ namespace wasmBinding {
 
   const std::string decrypt::recoveryUrl(bool full) const {
     if (full == true) {
-      return std::string (checker.getUrl() +"/rec/" + json_string_value(checker.getKid()));
+      return std::string (checker.getUrl() +"/rec/" + kid());
     } else {
       return std::string (checker.getUrl());
     }
@@ -225,6 +225,15 @@ namespace wasmBinding {
       log("Exception while unsealing a secret - " + std::string(exc.what()));
       throw std::runtime_error(std::string("Error during key exchange."));
     }
+  }
+
+  void decrypt::freeJson() {
+    json_decref(jwe_j);
+    json_decref(unwrappingJWK_j);
+    json_decref(cek);
+
+    jose_io_decref(input);
+    jose_io_decref(output);
   }
 
 } // namesapce wasmBinding

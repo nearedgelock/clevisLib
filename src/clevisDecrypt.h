@@ -24,11 +24,27 @@
 
 namespace wasmBinding {
 
+  /// Abstract class for handling a complete decryption proceduire, except interaction with an external
+  /// tang server.
+  ///
+  /// Operation goes as follow:
+  /// 1 - An instance is constructed using a JWE as the main data. Decomposition takes place immediately
+  /// 2 - The key material (transport) is made available.
+  /// 3 - A key exchange is performed using the transport key, the URL, and the external tang server
+  /// 4 - The reply from the server is injected into the class instance. In non-stream mode, decryption takes place
+  /// 5 - For stream node, block a data are provided.
+  /// 6 - In step 4 and 5, the decrypted data is returned to the caller
+  ///
   class decrypt {
   public:
-    decrypt(std::string jwe, bool streamMode = false);    // The JWE is expected to be complete, with the sealed secret, etc as per clevis
+    // With non streamMode, the JWE is expected to be complete, with the sealed secret, etc as per clevis. 
+    // streamMode is used for large payload, using block or stream interface. In such mode, the
+    // JWE is incomplete but includes IV. 
+    decrypt(std::string jwe, bool streamMode = false);
+    ~decrypt() { freeJson(); };
 
     const std::string                       recoveryUrl(bool full = true) const;                  // The complete URL needed to access the tang rec api, including the kid and query string
+    const std::string                       kid() const { return json_string_value(checker.getKid()); }; // The key ID
     const std::string                       transportKey() const;                                 // This is the payload of the POST request sent as the rec api call to tang
     const returnWithStatus_t                unSealSecret(const std::string responseFromTang);     // The tang interaction on JS side provides the reply here
 
@@ -45,7 +61,7 @@ namespace wasmBinding {
     bool                                    isPrintable() const { return printable; };
 
     void                                    printInfo() const;
-    void                                    replaceTransportKey(const std::string pub, const std::string priv) { transport = joseLibWrapper::decrypt::transportKey(pub, priv); };
+    void                                    replaceTransportKey(const std::string pub, const std::string priv) { transport = joseLibWrapper::decrypt::transportKey(pub, priv); };  // For testing
     const std::size_t                       getProtectedRawSize() const { if (jwe_j != nullptr) { return json_integer_value(json_object_get(jwe_j, "protected_rawsize")); } return 0; };
     const std::size_t                       getIVRawSize() const { if (jwe_j != nullptr) { return json_integer_value(json_object_get(jwe_j, "iv_rawsize")); } return 0; };
     
@@ -67,6 +83,7 @@ namespace wasmBinding {
     std::string                             lastPT;         // After runnig the checkTag, some of the B64 leftover might have resulted in few extra PT bytes
 
     void                                    performExchange(const std::string& responseFromTang);    // The tang interaction on JW side provides the reply here
+    void                                    freeJson();
   };
 
 } // namesapce wasmBinding
