@@ -27,7 +27,7 @@ extern "C" {
 }
 
 namespace binding {
-  decrypt::decrypt(std::string jwe, bool streamMode ) {
+  decrypt::decrypt(std::string jwe, bool streamMode, bool b64encode ): b64Encode(b64encode) {
     try {
       log("Constructing a decrypt object");
 
@@ -38,12 +38,7 @@ namespace binding {
 
       jwe_j = joseLibWrapper::decrypt::decomposeCompactJWE(jwe, streamMode);    // With streamMode, the jwe only needs to have the protected header and the IV.
     
-      //joseLibWrapper::logJson("The JWE to check is ", jwe_j);
       checker = joseLibWrapper::decrypt::checkJWE(jwe_j);
-
-      //checker.printProtectedHeader();
-      //checker.printEPK();
-      //checker.printSelectedServerKey();
 
       transport = joseLibWrapper::decrypt::transportKey(checker.getEpkCurve(), checker.getEpk());
       //transport.printInfo();
@@ -80,16 +75,11 @@ namespace binding {
       log("Payload size (after decrypt) is " + std::to_string(unsealed.size()));
 
       printable = joseLibWrapper::isPrintable(unsealed);
-      //printable = false;    // Force to always use B64 between us and JS...
-      //if (printable == false) {
-        // There are some non printable character in the unsealed secret. Lets base64 encode the result
-        //log("Non printable character, we base64 encode the result");
+      if (b64Encode == true) {
         return {joseLibWrapper::encodeB64(unsealed, false), true};
-      //} else {
-        // Text data
-      //  log("Normal text data");
-      //  return unsealed;
-      //}
+      } else {
+        return {unsealed, true};
+      }
     } catch (std::exception& exc) {
       log("Exception while unsealing a secret - " + std::string(exc.what()));
       rethrowIfAllowed();
@@ -164,8 +154,12 @@ namespace binding {
       //log("Decrypted payload size (before B64 reencoding) " + std::to_string(retval.size()));
       
       *o->len = 0;
-      const std::string     result = joseLibWrapper::encodeB64(retval, false);
-      return {std::move(result), true};
+      if (b64Encode == true) {}
+        const std::string     result = joseLibWrapper::encodeB64(retval, false);
+        return {std::move(result), true};
+      } else {
+        return {std::move(retval), true};
+      }
     } catch (std::exception& exc) {
       log("Top level exception - " + std::string(exc.what()));
       rethrowIfAllowed();
@@ -179,7 +173,7 @@ namespace binding {
     json_object_set(jwe_j, "tag",  json_string(tag.data()));
     bool                tagVerificationResult = input->done(input);
 
-    // The last feed operation might have left some bytes in the input buifer (because of bae64 leftover). 
+    // The last feed operation might have left some bytes in the input buffer (because of base64 leftover). 
     // We need to recover them
     joseLibWrapper::io_malloc_t*        o = containerof(output, joseLibWrapper::io_malloc_t, io);
     std::string         pt((char*)*o->buf, *o->len);

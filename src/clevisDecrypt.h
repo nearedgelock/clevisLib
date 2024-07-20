@@ -40,7 +40,7 @@ namespace binding {
     // With non streamMode, the JWE is expected to be complete, with the sealed secret, etc as per clevis. 
     // streamMode is used for large payload, using block or stream interface. In such mode, the
     // JWE is incomplete but includes IV. 
-    decrypt(std::string jwe, bool streamMode = false);
+    decrypt(std::string jwe, bool streamMode = false, bool b64encode = true);
     ~decrypt() { freeJson(); };
 
     const std::string                       recoveryUrl(bool full = true) const;                  // The complete URL needed to access the tang rec api, including the kid and query string
@@ -66,6 +66,7 @@ namespace binding {
     const std::size_t                       getIVRawSize() const { if (jwe_j != nullptr) { return json_integer_value(json_object_get(jwe_j, "iv_rawsize")); } return 0; };
     
   protected:
+    bool                                    b64Encode;
     mutable json_t*                         jwe_j = nullptr;
     joseLibWrapper::decrypt::checkJWE       checker;
     joseLibWrapper::decrypt::transportKey   transport;
