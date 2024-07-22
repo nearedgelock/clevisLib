@@ -35,8 +35,5 @@ if(NOT zlib_POPULATED)
     else()
     message(STATUS "zlib already built, skipping build step")
   endif()
-  
-  ## Add zlib subdirectory with specific options
-  #add_subdirectory(${zlib_SOURCE_DIR} ${zlib_BINARY_DIR} EXCLUDE_FROM_ALL)
 endif()
 

@@ -11,7 +11,6 @@ set(JANSSON_WITHOUT_TESTS ON CACHE BOOL "" FORCE)
 set(JANSSON_EXAMPLES OFF CACHE BOOL "" FORCE)
 set(JANSSON_INSTALL OFF CACHE BOOL "" FORCE)
 
-#FetchContent_MakeAvailable(jansson)
 FetchContent_GetProperties(jansson)
 if(NOT jansson_POPULATED)
   FetchContent_Populate(jansson)
