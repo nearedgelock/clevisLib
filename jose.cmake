@@ -27,8 +27,6 @@ set(MESON_SETUP_ARGS
 )
 
 if(NATIVE)
-  #list(APPEND MESON_SETUP_ARGS "--pkg-config-path=${CMAKE_CURRENT_BINARY_DIR}/vcpkg_installed/x64-linux/lib/pkgconfig")
-
 else()
   message(NOTICE "Preparing the meson machine file")
 
@@ -37,8 +35,12 @@ else()
   file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/jose/wasm-cross-meson.txt" "${MACHINEFILE_OUT}")
 
   list(APPEND MESON_SETUP_ARGS "--cross-file=${CMAKE_CURRENT_BINARY_DIR}/jose/wasm-cross-meson.txt")
-  #list(APPEND MESON_SETUP_ARGS "--pkg-config-path=${CMAKE_CURRENT_BINARY_DIR}/vcpkg_installed/wasm32-emscripten/lib/pkgconfig")
 endif()
+
+list(APPEND MESON_SETUP_ARGS "--pkg-config-path=${FETCHCONTENT_BASE_DIR}/jansson-src")
+list(APPEND MESON_SETUP_ARGS "--pkg-config-path=${FETCHCONTENT_BASE_DIR}/openssl-src")
+list(APPEND MESON_SETUP_ARGS "--pkg-config-path=${FETCHCONTENT_BASE_DIR}/botan-src/lib/pkgconfig")
+list(APPEND MESON_SETUP_ARGS "--pkg-config-path=${FETCHCONTENT_BASE_DIR}/zlib-src")
 
 message (NOTICE "meson arguments (for setup) are ${MESON_SETUP_ARGS}")
 

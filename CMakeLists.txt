@@ -48,7 +48,7 @@ find_package(ZLIB REQUIRED)
 find_package(OpenSSL REQUIRED)
 
 #set(CMAKE_SIZEOF_VOID_P "")   # Required to avoid a failure with jansson when check for 32/64 bitness. Hopefully this is not impactful
-find_package(jansson REQUIRED)
+#find_package(jansson REQUIRED)
 
 # Define final WASM module (static library)
 if (WEB_TARGET)
