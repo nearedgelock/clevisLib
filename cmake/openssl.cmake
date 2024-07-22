@@ -8,6 +8,7 @@ FetchContent_Declare(
 FetchContent_GetProperties(openssl)
 if(NOT openssl_POPULATED)
   FetchContent_Populate(openssl)
+  set(openssl_POPULATED TRUE CACHE BOOL "openssl populated" FORCE)
   
   # Prepare configuration options
   set(OPENSSL_CONFIG_OPTIONS
@@ -35,7 +36,7 @@ if(NOT openssl_POPULATED)
       WORKING_DIRECTORY ${openssl_SOURCE_DIR}
     )
   else()
-    message(STATUS "OpenSSL already built, skipping build step")
+    message(STATUS "OPenSSL already built, skipping build step. We found ${openssl_SOURCE_DIR}/libssl.a and ${openssl_SOURCE_DIR}/libcrypto.a")
   endif()
 endif()
 

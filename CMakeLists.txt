@@ -41,14 +41,18 @@ endif()
 #
 # Add the various libraries, either directly (jose) or as a package
 #
+include(cmake/targetInfo.cmake)
 include(cmake/addExternal.cmake)
 include (jose.cmake)
+find_package(PkgConfig REQUIRED) 
 find_package(Botan REQUIRED PATHS ${botan_BINARY_DIR})
-find_package(ZLIB REQUIRED)
 find_package(OpenSSL REQUIRED)
 
 #set(CMAKE_SIZEOF_VOID_P "")   # Required to avoid a failure with jansson when check for 32/64 bitness. Hopefully this is not impactful
-#find_package(jansson REQUIRED)
+
+find_package(jansson REQUIRED PATHS ${FETCHCONTENT_BASE_DIR}/jansson-build/install/lib/cmake/jansson)
+message (STATUS "Searched ${FETCHCONTENT_BASE_DIR}/jansson-build/install/lib/cmake/jansson")
+print_target_info(jansson::jansson)
 
 # Define final WASM module (static library)
 if (WEB_TARGET)
@@ -70,8 +74,8 @@ target_link_libraries(${CMAKE_PROJECT_NAME} PUBLIC
   
 )
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE
-  zlibstatic 
-  jansson
+  ZLIB::ZLIB 
+  jansson::jansson
   Botan::Botan-static
   OpenSSL::Crypto
 )

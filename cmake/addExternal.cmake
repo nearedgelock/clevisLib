@@ -5,7 +5,6 @@
 
 include(FetchContent)
 
-
 include(cmake/jansson.cmake)
 include(cmake/botan.cmake)
 include(cmake/zlib.cmake)

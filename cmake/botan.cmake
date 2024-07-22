@@ -8,9 +8,13 @@ FetchContent_Declare(
 )
 
 FetchContent_GetProperties(botan)
+set(botan_POPULATED FALSE CACHE BOOL "botan populated" FORCE)
+message(STATUS "Botan flag is ${botan_POPULATED}")
 if(NOT botan_POPULATED)
+  message(STATUS "Populating (download) Botan at ${botan_SOURCE_DIR}")
   FetchContent_Populate(botan)
-  
+  set(botan_POPULATED TRUE CACHE BOOL "botan populated" FORCE)
+ 
   # Determine the compiler type
   if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
     set(BOTAN_COMPILER_TYPE "gcc")
@@ -57,22 +61,23 @@ if(NOT botan_POPULATED)
        message(FATAL_ERROR \"Botan installation failed\")
      endif()"
   )
-
-  # Check if Botan is already built
-  if(NOT EXISTS "${botan_SOURCE_DIR}/libbotan-3.a")
-    # Execute the Botan build script in a clean environment
-    execute_process(
-      COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/build_botan.cmake
-      RESULT_VARIABLE BOTAN_BUILD_SCRIPT_RESULT
-    )
-  
-    if(NOT BOTAN_BUILD_SCRIPT_RESULT EQUAL 0)
-      message(FATAL_ERROR "Botan build script failed")
-    endif()
-  else()
-    message(STATUS "Botan already built, skipping build step")
-  endif()
 endif()
+
+# Check if Botan is already built
+if(NOT EXISTS "${botan_BINARY_DIR}/lib/libbotan-3.a")
+  # Execute the Botan build script in a clean environment
+  execute_process(
+    COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/build_botan.cmake
+    RESULT_VARIABLE BOTAN_BUILD_SCRIPT_RESULT
+  )
+  
+  if(NOT BOTAN_BUILD_SCRIPT_RESULT EQUAL 0)
+    message(FATAL_ERROR "Botan build script failed")
+  endif()
+else()
+  message(STATUS "Botan already built, skipping build step. We found ${botan_BINARY_DIR}/lib/libbotan-3.a")
+endif()
+
 
 
 
