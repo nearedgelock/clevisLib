@@ -48,7 +48,7 @@ namespace joseLibWrapper {
   void              logJWE(const std::string& msg, json_t* jwe);
   const std::string prettyPrintJson(const json_t* val);
 
-  json_t*           generateKey(const json_t* crv = nullptr);
+  json_t*           generateKey(const json_t* crv = nullptr, bool forSigning = false);
   json_t*           keyExchange(const json_t* key1, const json_t* key2, bool defaultAlgo = false);
   json_t*           keyExchange(const std::string& key1, const json_t* key2, bool defaultAlgo = false);
   void              mergeHeaderIntoProtected(json_t* jwe);

@@ -36,7 +36,7 @@ namespace binding {
                                 };
 
                                 
-  const std::string         generateKey();
+  const std::string         generateKey(bool forSigning = false);
   void                      log(const std::string& msg);
 
 } // namesapce binding

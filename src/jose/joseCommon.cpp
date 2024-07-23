@@ -249,15 +249,14 @@ namespace joseLibWrapper {
     }
   };
 
-
-
-  json_t* generateKey(const json_t* crv) {
+  json_t* generateKey(const json_t* crv, bool forSigning) {
     try {
+      //"ES512"
       json_auto_t*  jwk = nullptr;
       if (crv == nullptr) {
-        jwk = json_pack("{s:s}", "alg", "ECMR");
+        jwk = json_pack("{s:s}", "alg", (forSigning ? "ES512" : "ECMR"));
       } else {
-        jwk = json_pack("{s:s, s:s}", "alg", "ECMR", "crv", json_string_value(crv));
+        jwk = json_pack("{s:s, s:s}", "alg", (forSigning ? "ES512" : "ECMR"), "crv", json_string_value(crv));
       }
       if (jose_jwk_gen(nullptr, jwk) == true) {      
         return json_incref(jwk);

@@ -26,9 +26,9 @@ namespace binding {
   bool      isLogEnabled = false;
   bool      allowException = false;
 
-  const std::string generateKey() {
+  const std::string generateKey(bool forSigning) {
     try {
-      json_auto_t*        key = joseLibWrapper::generateKey();
+      json_auto_t*        key = joseLibWrapper::generateKey(nullptr, forSigning);
 
       if (key != nullptr) {
         const std::string   result = joseLibWrapper::prettyPrintJson(key);
@@ -39,7 +39,7 @@ namespace binding {
     } catch (std::exception &exc) {
       log("Top level exeception - " + std::string(exc.what()));
       rethrowIfAllowed();
-      return "Got an exception";
+      return "Got an exception while generating a new key";
     }
   }
 

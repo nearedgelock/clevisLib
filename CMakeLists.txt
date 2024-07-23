@@ -69,9 +69,9 @@ add_subdirectory(src)
 # clevisLib target adjustment - Note that JOSE_INCLUDE_OBJECT is a list of objects that MUST always be linked, despite their symbol not being called for others
 #
 # Link sublibraries
+add_dependencies(${CMAKE_PROJECT_NAME} libjose_static)
 target_link_libraries(${CMAKE_PROJECT_NAME} PUBLIC
- "-Wl,--whole-archive $<TARGET_OBJECTS:libjose_static>  -Wl,--no-whole-archive"
-  
+ "-Wl,--whole-archive $<TARGET_OBJECTS:libjose_static>  -Wl,--no-whole-archive"  
 )
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE
   ZLIB::ZLIB 
@@ -94,7 +94,7 @@ if (NOT BUILD_EXECUTABLE AND NOT WEB_TARGET)
   include(GNUInstallDirs)
 
   # Remove all libraries from the target and makes sure they are not included
-  # in tghe installation location, thus leaving full control on those to the
+  # in the installation location, thus leaving full control on those to the
   # other project.
   set_property(TARGET ${CMAKE_PROJECT_NAME} PROPERTY INTERFACE_LINK_LIBRARIES "")
 

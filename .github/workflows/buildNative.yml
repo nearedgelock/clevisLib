@@ -20,9 +20,13 @@ jobs:
     - name: Install cmake
       run: sudo apt-get update && sudo apt-get -y install cmake meson
 
+    # Clear any left over from a previous run
+    - name: CMake setup
+      run: make cleanAll
+
     # Run the cmake setup for a Natve build
     - name: CMake setup
-      run: make configure
+      run: make configureDebug
 
     # Build it!
     - name: Build
