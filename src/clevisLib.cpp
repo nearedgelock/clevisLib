@@ -21,6 +21,7 @@
 #include <stdlib.h>
 #include <iostream>
 
+
 namespace binding {
   
   bool      isLogEnabled = false;
@@ -48,6 +49,30 @@ namespace binding {
       std::cout << (msg.empty() ? "" : msg) << std::endl;
     }
   };
+
+  const returnWithStatus_t sign(const std::string& payload, const std::string& signKey) {
+    returnWithStatus_t        result;
+
+    json_t* sign(json_t* payload, json_t* sign);
+
+    json_error_t              error;
+    json_auto_t*              sign_j = json_loads(signKey.data(), 0, &error);
+    json_auto_t*              payload_j = json_loads(payload.data(), 0, &error);
+    json_auto_t*              sig_template = json_pack("{s:{s:s}}", "protected", "cty", "jwk-set+json");
+
+    json_auto_t*              payloadSigned = joseLibWrapper::sign(payload_j, sign_j);
+
+    if (payloadSigned == nullptr) {
+      result.success = false;
+      result.msg = "Error while signing, using jose_jws_sig";
+      return result;
+    }
+
+    result.success = true;
+    result.msg = joseLibWrapper::printFlatJson(payloadSigned);
+    return result;    
+  };
+
 
 } // namespace binding
 

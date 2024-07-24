@@ -116,14 +116,17 @@ namespace encrypt {
       R"(    "pin": "tang",)"
       R"(    "tang": {)"
       R"(      "adv": )";
+
     jweSkeleton += adv_s + ",";
     jweSkeleton +=
       R"(      "url": ")";
+
     jweSkeleton += url + "\"";
     jweSkeleton +=
       R"(    })"
       R"(  },)"
       R"(  "kid": ")";
+      
     jweSkeleton += kid + R"("}})";
 
     json_error_t        error;

@@ -25,7 +25,8 @@
 #include <stdlib.h>
 
 extern "C" {
-#include "jose/jwk.h"
+  #include "jose/jwk.h"
+  #include "jose/jws.h"
 }
 
 #include "botan/base64.h"
@@ -228,6 +229,19 @@ namespace joseLibWrapper {
     }
   }
 
+  const std::string printFlatJson(const json_t* val) {
+    const char*   result = json_dumps(val, JSON_INDENT(0) | JSON_SORT_KEYS | JSON_COMPACT);
+    if (result != nullptr) {
+      std::string   retval(result);
+      free((void*)result);
+      return retval;
+    } else if (json_is_string(val)) {
+      return std::string(json_string_value(val));
+    } else {
+      return "Invalid or empty JSON value";
+    }    
+  };
+
   void logJson(const std::string& msg, const json_t* val) {
     if (isLogEnabled) {
       std::cout << (msg.empty() ? "" : msg) << (val != nullptr ? prettyPrintJson(val) : "") << std::endl;
@@ -299,6 +313,18 @@ namespace joseLibWrapper {
     throw failRemovePriv();
   }
 
+  json_t* sign(json_t* payload, json_t* sign) {
+    json_auto_t*              sig_template = json_pack("{s:{s:s}}", "protected", "cty", "jwk-set+json");
+    json_auto_t*              jws = json_pack("{s:o}", "payload", encodeB64ToJson(printFlatJson(payload), false));
+
+    if (jose_jws_sig(nullptr, jws, sig_template, sign) == false) {
+      return nullptr;
+    }
+
+    json_incref(jws);
+    return jws; 
+  }
+
   std::string thumbprint(const json_t* jwk) {
     // Compute the SHA256 thumbprint of the given key
     // First, we need to find the required size for the buffer
@@ -307,6 +333,11 @@ namespace joseLibWrapper {
     // Now, compute the actual thumbprint
     std::string       thumbprint(retval, 0);
     retval = jose_jwk_thp_buf(nullptr, jwk, "S256", (uint8_t*)thumbprint.data(), retval);
+
+    if (retval == -1) {
+      // Failure, the jwk is probably not a JWK....
+      throw joseException("Can not compute thumbprint - The provided JWK is invalid");
+    }
     
     return encodeB64(thumbprint, true);
   };

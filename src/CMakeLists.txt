@@ -5,6 +5,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
   clevisLib.cpp
   clevisDecrypt.cpp
   clevisEncrypt.cpp
+  clevisTang.cpp
 )
 
 if (BUILD_EXECUTABLE)

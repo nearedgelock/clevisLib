@@ -35,10 +35,10 @@ namespace binding {
                                   bool          success;
                                 };
 
-                                
+
   const std::string         generateKey(bool forSigning = false);
   void                      log(const std::string& msg);
-
+  const returnWithStatus_t  sign(const std::string& payload, const std::string& sign);
 } // namesapce binding
 
 

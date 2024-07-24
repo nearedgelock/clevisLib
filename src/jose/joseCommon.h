@@ -47,12 +47,14 @@ namespace joseLibWrapper {
   void              logJson(const std::string& msg, const json_t* val);
   void              logJWE(const std::string& msg, json_t* jwe);
   const std::string prettyPrintJson(const json_t* val);
+  const std::string printFlatJson(const json_t* val);
 
   json_t*           generateKey(const json_t* crv = nullptr, bool forSigning = false);
   json_t*           keyExchange(const json_t* key1, const json_t* key2, bool defaultAlgo = false);
   json_t*           keyExchange(const std::string& key1, const json_t* key2, bool defaultAlgo = false);
   void              mergeHeaderIntoProtected(json_t* jwe);
   void              removePrivate(json_t* key);
+  json_t*           sign(json_t* payload, json_t* sign);
   std::string       thumbprint(const json_t* jwk);
 
   class joseException: public std::runtime_error {
