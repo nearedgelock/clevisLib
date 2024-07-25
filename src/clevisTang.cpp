@@ -75,7 +75,7 @@ namespace binding {
 
     // Sign the payload
     binding::returnWithStatus_t   resultSign;
-    resultSign = sign(joseLibWrapper::prettyPrintJson(payload), signKey);
+    resultSign = sign(joseLibWrapper::printFlatJson(payload), signKey);
     if (resultSign.success == false) {
       result.success = false;
       result.msg = "Failure signing the advertisement paylaod";

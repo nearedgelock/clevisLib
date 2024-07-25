@@ -48,6 +48,7 @@ namespace tang {
       return nullptr;
     }
 
+    json_incref(rep);
     return rep;
 
   }

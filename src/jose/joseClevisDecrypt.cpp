@@ -264,7 +264,7 @@ namespace decrypt {
       json_incref(ephemeralKey_j);
 
       json_auto_t*                  ex_j = joseLibWrapper::keyExchange(epk, ephemeralKey_j);    // Perform a key extract between the EPK and the new ephemeral key
-      ephemeralKey_pub = joseLibWrapper::prettyPrintJson(ex_j);
+      ephemeralKey_pub = joseLibWrapper::printFlatJson(ex_j);
     } catch (std::exception& exc) {
       throw;
     }

@@ -102,7 +102,7 @@ namespace encrypt {
 
   json_t* skeletonJWE(const json_t* advKeys, const std::string& url, const std::string& kid) {
     // Create a clevis compatible skeleton JWE
-    const std::string     adv_s = prettyPrintJson(advKeys);
+    const std::string     adv_s = printFlatJson(advKeys);
 
     if ( (adv_s.empty() == true) or (url.empty() == true) or (kid.empty() == true) ) {
       throw failedEncrypt("Missing data to create base JWE");
@@ -126,7 +126,7 @@ namespace encrypt {
       R"(    })"
       R"(  },)"
       R"(  "kid": ")";
-      
+
     jweSkeleton += kid + R"("}})";
 
     json_error_t        error;

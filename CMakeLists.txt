@@ -109,6 +109,7 @@ if (NOT BUILD_EXECUTABLE AND NOT WEB_TARGET)
     src/clevisLib.h
     src/clevisDecrypt.h
     src/clevisEncrypt.h
+    src/clevisTang.h
 
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/
   )
@@ -117,6 +118,7 @@ if (NOT BUILD_EXECUTABLE AND NOT WEB_TARGET)
     src/jose/joseCommon.h    
     src/jose/joseClevisDecrypt.h
     src/jose/joseClevisEncrypt.h
+    src/jose/joseTang.h
 
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/jose/
   )
