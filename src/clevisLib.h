@@ -23,12 +23,12 @@
 #endif
 
 namespace binding {
-  extern bool       isLogEnabled;
-  extern bool       allowException;     // Top level function / methods could generate exceptions or returning normally.
+  extern bool               isLogEnabled;
+  extern bool               allowException;     // Top level function / methods could generate exceptions or returning normally.
 
-  inline void       enableLog() { isLogEnabled = true; };
-  inline void       enableException() { allowException = true; };
-  inline void       rethrowIfAllowed() { if (allowException == true) { throw; } };
+  inline void               enableLog() { isLogEnabled = true; };
+  inline void               enableException() { allowException = true; };
+  inline void               rethrowIfAllowed() { if (allowException == true) { throw; } };
 
   using returnWithStatus_t =    struct returnWithStatus {
                                   std::string   msg;
@@ -39,6 +39,8 @@ namespace binding {
   const std::string         generateKey(bool forSigning = false);
   void                      log(const std::string& msg);
   const returnWithStatus_t  sign(const std::string& payload, const std::string& sign);
+  const returnWithStatus_t  thumbprint(const std::string& jwk);  
+
 } // namesapce binding
 
 

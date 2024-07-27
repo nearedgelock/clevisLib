@@ -73,6 +73,21 @@ namespace binding {
     return result;    
   };
 
+  const returnWithStatus_t thumbprint(const std::string& jwk) {
+    returnWithStatus_t        result;
+    json_error_t              error;
+    json_auto_t*              jwk_j = json_loads(jwk.data(), 0, &error);
+
+    if (jwk_j != nullptr) {
+      result.success = true;
+      result.msg = joseLibWrapper::thumbprint(jwk_j);
+      return result;
+    }
+
+    result.success = false;
+    return result;
+  } 
+
 
 } // namespace binding
 

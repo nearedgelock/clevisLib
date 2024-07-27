@@ -57,7 +57,7 @@ namespace decrypt {
     bool                      checkJWEValidity_sss(const json_t* hdr);
     bool                      checkJWEValidity_tpm(const json_t* hdr);
 
-    json_t*                   jweProtectedHeaders_j;
+    json_t*                   jweProtectedHeaders_j = nullptr;
 
     // For the tang pin
     // Borrowed references, which must NOT be freed
