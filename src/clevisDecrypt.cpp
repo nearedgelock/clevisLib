@@ -154,7 +154,7 @@ namespace binding {
       //log("Decrypted payload size (before B64 reencoding) " + std::to_string(retval.size()));
       
       *o->len = 0;
-      if (b64Encode == true) {}
+      if (b64Encode == true) {
         const std::string     result = joseLibWrapper::encodeB64(retval, false);
         return {std::move(result), true};
       } else {

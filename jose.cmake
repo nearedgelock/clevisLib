@@ -8,12 +8,12 @@ set(INSTALL_DIR "${jose_BINARY_DIR}/install")
 
 # Manually configuring and building jose
 
-message (NOTICE "Starting configuration, build and installation of jose")
+message (STATUS "Starting configuration, build and installation of jose")
 execute_process(
   COMMAND mkdir -p ${jose_BINARY_DIR}
 )
 
-message (NOTICE "jose setup at location ${jose_BINARY_DIR}, using ${CMAKE_CURRENT_SOURCE_DIR}/jose")
+message (STATUS "jose setup at location ${jose_BINARY_DIR}, using ${CMAKE_CURRENT_SOURCE_DIR}/jose")
 set(ENV{PKG_CONFIG} "/usr/bin/pkg-config")
 
 # Build arguments list
@@ -29,7 +29,7 @@ set(MESON_SETUP_ARGS
 # Some cross-build specific
 if(NATIVE)
 else()
-  message(NOTICE "Preparing the meson machine file")
+  message(STATUS "Preparing the meson machine file")
 
   file(READ "${CMAKE_CURRENT_SOURCE_DIR}/wasm-cross-meson.txt.in" MACHINEFILE_IN)
   string(CONFIGURE "${MACHINEFILE_IN}" MACHINEFILE_OUT)
@@ -41,7 +41,7 @@ endif()
 # Dependencies
 set(MESON_PKG_CONFIG_PATH
   "${FETCHCONTENT_BASE_DIR}/jansson-build/install/lib/pkgconfig"
-  "${FETCHCONTENT_BASE_DIR}/openssl-src"
+  "${FETCHCONTENT_BASE_DIR}/openssl-install/lib/pkgconfig"
   "${FETCHCONTENT_BASE_DIR}/botan-build/lib/pkgconfig"
   "${FETCHCONTENT_BASE_DIR}/zlib-build"
 )
@@ -49,7 +49,7 @@ set(MESON_PKG_CONFIG_PATH
 string(JOIN ":" MESON_PKG_CONFIG_PATH_ARG ${MESON_PKG_CONFIG_PATH})
 list(APPEND MESON_SETUP_ARGS "--pkg-config-path=${MESON_PKG_CONFIG_PATH_ARG}")
 
-message (NOTICE "meson arguments (for setup) are ${MESON_SETUP_ARGS}")
+message (STATUS "meson arguments (for setup) are ${MESON_SETUP_ARGS}")
 
 execute_process(
   WORKING_DIRECTORY ${jose_BINARY_DIR}

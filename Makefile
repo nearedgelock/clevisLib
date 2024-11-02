@@ -35,16 +35,18 @@ configure:
 
 .PHONY: configureWASMDebug
 configureWASMDebug:
-	@$(EMCMAKE) cmake -S . -B build -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_EXE_LINKER_FLAGS=\"-static\"-D CMAKE_BUILD_TYPE=Debug -DWEB_TARGET=1 -DBUILD_EXECUTABLE=OFF
+	@$(EMCMAKE) cmake -S . -B build -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_EXE_LINKER_FLAGS=\"-static\"-D CMAKE_BUILD_TYPE=Debug -DNATIVE=OFF -DWEB_TARGET=1 -DBUILD_EXECUTABLE=OFF
 
 .PHONY: configureWASM
 configureWASM:
-	@$(EMCMAKE) cmake -S . -B build -DCMAKE_EXE_LINKER_FLAGS=\"-static\" -D CMAKE_BUILD_TYPE=Release -DWEB_TARGET=1 -DBUILD_EXECUTABLE=Off
+	@$(EMCMAKE) cmake -S . -B build -DCMAKE_EXE_LINKER_FLAGS=\"-static\" -D CMAKE_BUILD_TYPE=Release -DNATIVE=OFF -DWEB_TARGET=1 -DBUILD_EXECUTABLE=Off
 
 .PHONY: build
 build:
 	@$(CMAKE) --build build
 
+# This currently create a package and cmake when not building an execut5able and not targetting the emscripten cross-compiler
+# The goal is to allow the use of this as a library to other cmake projects
 .PHONY: install
 install:
 	@$(CMAKE) --install build

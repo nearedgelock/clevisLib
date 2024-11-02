@@ -76,7 +76,7 @@ std::cout << "1st segment " << decryptor.feedDataLarge(segment1).msg << std::end
 std::cout << "2nd segment " << decryptor.feedDataLarge(segment2).msg << std::endl;
 //std::cout << "2nd segment " << decryptorStream.feedDataLarge("").msg << std::endl;
 
-std::cout << "Decryption result is " << decryptor.checkTag(decomposedJWE[3]) << std::endl;
+std::cout << "Decryption result is " << (decryptor.checkTag(decomposedJWE[3]) ? "valid" : "invalid") << std::endl;
 
 /*
 
