@@ -19,12 +19,13 @@
 #include <stdexcept>
 
 #ifdef WEB_TARGET
+#include <emscripten.h>
 #include <emscripten/bind.h>
 #endif
 
 namespace binding {
   extern bool               isLogEnabled;
-  extern bool               allowException;     // Top level function / methods could generate exceptions or returning normally.
+  extern bool               allowException;     // Top level function / methods may generate exceptions. If not, returning normally.
 
   inline void               enableLog() { isLogEnabled = true; };
   inline void               enableException() { allowException = true; };
@@ -41,7 +42,7 @@ namespace binding {
   const returnWithStatus_t  sign(const std::string& payload, const std::string& sign);
   const returnWithStatus_t  thumbprint(const std::string& jwk);  
 
-} // namesapce binding
+} // namespace binding
 
 
 

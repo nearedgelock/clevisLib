@@ -71,7 +71,7 @@ namespace binding {
     std::size_t             ctl = 0;        // And its length
   };
 
-} // namesapce binding
+} // namespace binding
 
 
 

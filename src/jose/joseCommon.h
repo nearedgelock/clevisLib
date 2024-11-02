@@ -23,6 +23,8 @@ extern "C" {
 #include "jose/io.h"
 }
 
+#include <clevisLib.h>
+
 namespace joseLibWrapper {  
   std::string       compact(const json_t* jwe);
   std::string       compactPartialProtected(const json_t* jwe);

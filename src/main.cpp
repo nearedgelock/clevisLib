@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
+#ifndef WEB_TARGET
 //
-// Adding a main entry point for testing (mostly with nodeJS)
+// Adding a main entry point for testing
 //
 
 #include "clevisLib.h"
@@ -118,3 +119,4 @@ std::cout << "Decryption result is " << decryptorStream.checkTag(decomposedJWE[3
 */
 
 }
+#endif

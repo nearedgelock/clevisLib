@@ -23,7 +23,7 @@
 namespace binding {
   const returnWithStatus_t      createJWKAdvertisement(const std::string& jwk, const std::string& signKey);
   const returnWithStatus_t      keyExchange(const std::string& jwk, const std::string& req);
-} // namesapce binding
+} // namespace binding
 
 
 

@@ -87,7 +87,7 @@ namespace binding {
     void                                    freeJson();
   };
 
-} // namesapce binding
+} // namespace binding
 
 
 

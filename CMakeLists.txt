@@ -57,31 +57,15 @@ include(cmake/addExternal.cmake)
 include (jose.cmake)
 
 message (STATUS "Done with including 3rd party libraries. We now need to find them....")
-message (STATUS "Botan location is ${botan_BINARY_DIR}")
-
-message(STATUS "botan_BINARY_DIR = ${botan_BINARY_DIR}")
-message(STATUS "CMAKE_PREFIX_PATH = ${CMAKE_PREFIX_PATH}")
-message(STATUS "CMAKE_FIND_ROOT_PATH = ${CMAKE_FIND_ROOT_PATH}")
-message(STATUS "CMAKE_LIBRARY_PATH = ${CMAKE_LIBRARY_PATH}")
-message(STATUS "CMAKE_MODULE_PATH = ${CMAKE_MODULE_PATH}")
-message(STATUS "BUILD TYPE = ${CMAKE_BUILD_TYPE}")
-if(WEB_TARGET)
-    message(STATUS "Building for Web/WASM")
-endif()
-
+#set(CMAKE_FIND_DEBUG_MODE TRUE)
 
 find_package(PkgConfig REQUIRED) 
-set(CMAKE_FIND_DEBUG_MODE TRUE)
 find_package(Botan REQUIRED PATHS ${botan_BINARY_DIR}/lib/cmake/Botan-3.5.0)
-print_target_info(Botan::Botan-static)
 find_package(OpenSSL REQUIRED)
-print_target_info(OpenSSL::Crypto)
 
 #set(CMAKE_SIZEOF_VOID_P "")   # Required to avoid a failure with jansson when check for 32/64 bitness. Hopefully this is not impactful
 
-message (STATUS "Searched ${FETCHCONTENT_BASE_DIR}/jansson-build/install/lib/cmake/jansson")
 find_package(jansson REQUIRED PATHS ${FETCHCONTENT_BASE_DIR}/jansson-build/install/lib/cmake/jansson)
-print_target_info(jansson::jansson)
 
 #
 # Our sources

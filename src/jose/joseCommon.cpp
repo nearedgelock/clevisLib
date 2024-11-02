@@ -243,9 +243,10 @@ namespace joseLibWrapper {
   };
 
   void logJson(const std::string& msg, const json_t* val) {
-    if (isLogEnabled) {
-      std::cout << (msg.empty() ? "" : msg) << (val != nullptr ? prettyPrintJson(val) : "") << std::endl;
-    }
+    //if (isLogEnabled) {
+    //  std::cout << (msg.empty() ? "" : msg) << (val != nullptr ? prettyPrintJson(val) : "") << std::endl;
+    //}
+    binding::log(msg + (val != nullptr ? prettyPrintJson(val) : ""));
   };
 
   void logJWE(const std::string& msg, json_t* jwe) {

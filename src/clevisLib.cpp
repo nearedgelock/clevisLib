@@ -21,6 +21,16 @@
 #include <stdlib.h>
 #include <iostream>
 
+#ifdef WEB_TARGET
+// Binding to call JS code
+EM_JS(void, logToJS, (const char* msg), {
+  Module.logFromWasm(UTF8ToString(msg));
+});
+#endif
+
+extern "C" {
+  void      logToJS(const char* msg);
+}
 
 namespace binding {
   
@@ -46,7 +56,11 @@ namespace binding {
 
   void log(const std::string& msg) {
     if (isLogEnabled) {
+#ifdef WEB_TARGET
+      logToJS(msg.c_str());
+#else
       std::cout << (msg.empty() ? "" : msg) << std::endl;
+#endif
     }
   };
 
@@ -92,7 +106,10 @@ namespace binding {
 } // namespace binding
 
 #ifdef WEB_TARGET
+//Binding to enable calling from JS
 EMSCRIPTEN_BINDINGS(clevisLib) {
+  emscripten::function("enableLog", &binding::enableLog);
+
   emscripten::function("decomposeAdvertisement", &binding::decomposeAdvertisement);
   emscripten::function("generateKey", &binding::generateKey);
   emscripten::function("getServerKeyFromAdvertisement", &binding::getServerKeyFromAdvertisement);
