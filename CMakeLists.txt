@@ -19,6 +19,15 @@ option(NATIVE "Build using the native / local compiler" ${NATIVE_DEFAULT})
 
 set(CMAKE_CXX_STANDARD 20)
 
+# Define final WASM module (static library)
+if (WEB_TARGET)
+  # This should not be necessary to propagate to the compiler but it is....
+  add_definitions(-DWEB_TARGET)
+  
+  # For emscripten, the executable is the .wasm and .js files
+  set(BUILD_EXECUTABLE ON)
+endif()
+
 #
 # Top level stuff 
 #
@@ -74,12 +83,6 @@ message (STATUS "Searched ${FETCHCONTENT_BASE_DIR}/jansson-build/install/lib/cma
 find_package(jansson REQUIRED PATHS ${FETCHCONTENT_BASE_DIR}/jansson-build/install/lib/cmake/jansson)
 print_target_info(jansson::jansson)
 
-# Define final WASM module (static library)
-if (WEB_TARGET)
-  # This should not be necessary to propagate to the compiler but it is....
-  add_definitions(-DWEB_TARGET)
-endif()
-
 #
 # Our sources
 #
@@ -104,7 +107,13 @@ if (NATIVE)
   #set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES LINK_FLAGS)
 else()
   # Set WASM target - For browser
-  set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES LINK_FLAGS "-fexceptions -lembind -s WASM=1 -s MODULARIZE=1 -s ENVIRONMENT=\"web\" -sASSERTIONS -s EXPORT_NAME=\"createModule\"")
+  set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES 
+    SUFFIX ".js"
+    LINK_FLAGS "-fexceptions -lembind -s WASM=1 -s MODULARIZE=1 -s ENVIRONMENT=web -s ASSERTIONS=1 -s EXPORT_NAME=createModule -s ERROR_ON_UNDEFINED_SYMBOLS=1"
+)
+
+
+
 endif()
 
 #
