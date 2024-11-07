@@ -28,8 +28,10 @@ namespace binding {
       return joseLibWrapper::prettyPrintJson(payload_j);
     } catch (std::exception& exc) {
       log("Top level exception - " + std::string(exc.what()));
+      log("Advertisement content was " + adv);
       rethrowIfAllowed();
-      return "Got an exception";
+      return "Got an exception, while analyzing the advertisement content.";
+
     }
   }
 
@@ -43,15 +45,16 @@ namespace binding {
 
       return joseLibWrapper::prettyPrintJson(serverKey);
     } catch (std::exception& exc) {
-      log("Top level exeception - " + std::string(exc.what()));
+      log("Top level exception - " + std::string(exc.what()));
+      log("Advertisement content was " + adv);
       rethrowIfAllowed();
-      return "Got an exception";
+      return "Got an exception, while extracting the server key from the advertisement.";
     }
   }
 
   json_t* prepareSealing(const std::string& adv, const std::string& url, json_t* cek) {
     if (cek == nullptr) {
-      throw std::runtime_error(std::string("Missing CEK objects"));
+      throw std::runtime_error(std::string("Missing CEK object"));
     }
 
     //joseLibWrapper::logJson("The advertisement string is " + adv, nullptr);
@@ -78,15 +81,17 @@ namespace binding {
       jwe = prepareSealing(adv, url, cek);
 
       log("Ready to encrypt");
-      joseLibWrapper::logJson("The skeleton JWE is ", jwe);
-      joseLibWrapper::logJson("And the CEK is ", cek);
+      //There is some sensitive data that should not go in logs joseLibWrapper::logJson("The skeleton JWE is ", jwe);
       joseLibWrapper::encrypt::encryptIntoJWE (jwe, cek, (void*) secret.data(), secret.size());
 
       return joseLibWrapper::compact(jwe);
     } catch (std::exception& exc) {
       log("Top level exception - " + std::string(exc.what()));
+      log("Advertisement content was " + adv);
+      log("URL was " + url);
+      log("The secret size was " + std::to_string(secret.size()));
       rethrowIfAllowed();
-      return "Got an exception";
+      return "Got an exception when sealing a secret.";
     }
   }
 
@@ -100,9 +105,7 @@ namespace binding {
       jwe = prepareSealing(adv, url, cek);
 
       log("Ready to encrypt");
-      joseLibWrapper::logJson("The skeleton JWE is ", jwe);
-      joseLibWrapper::logJson("And the CEK is ", cek);
-
+      //There is some sensitive data that should not go in logs joseLibWrapper::logJson("The skeleton JWE is ", jwe);
 
       // Convert JavaScript array to std::vector<char> using vecFromJSArray
       std::vector<uint8_t>  dataVector = emscripten::vecFromJSArray<uint8_t>(data);
@@ -113,8 +116,10 @@ namespace binding {
       return joseLibWrapper::compact(jwe);
     } catch (std::exception& exc) {
       log("Top level exception - " + std::string(exc.what()));
+      log("Advertisement content was " + adv);
+      log("URL was " + url);
       rethrowIfAllowed();
-      return "Got an exception";
+      return "Got an exception when sealing a secret received as an ArrayBuffer";
     }
   }
 #endif
@@ -131,14 +136,15 @@ namespace binding {
       }
       throw joseLibWrapper::invalidJson();
     } catch (std::exception& exc) {
-      log("Top level exeception - " + std::string(exc.what()));
+      log("Top level exception - " + std::string(exc.what()));
+      log("Advertisement content was " + adv);
       rethrowIfAllowed();
-      return "Got an exception";      
+      return "Got an exception while validating an advertisement";
     }
   }
 
   //
-  // Calass object that implements the ability to encrypt in a stream fashion, supporting limitless plain-text (and hence
+  // Class object that implements the ability to encrypt in a stream fashion, supporting limitless plain-text (and hence
   // cipher-text) size.
   //
   
@@ -216,7 +222,7 @@ namespace binding {
     } catch (std::exception& exc) {
       log("Top level exception - " + std::string(exc.what()));
       rethrowIfAllowed();
-      return "Got an exception";
+      return "Got an exception when receiving data to encrypt in the form of an ArrayBuffer";
     }
   }
 #endif

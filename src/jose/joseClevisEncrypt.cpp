@@ -45,8 +45,6 @@ namespace encrypt {
   json_t* encryptIntoJWE (json_t* baseJWE, json_t* cek, void* payload, std::size_t size) {
     // We presume that a skeleton base JWE is provided and the cek is suitable
 
-    //joseLibWrapper::logJson("JWE before encryption ", baseJWE);
-    //joseLibWrapper::logJson("CEK before encryption ", cek);
     if (jose_jwe_enc_cek(nullptr, baseJWE, cek, payload, size) == true) {
       return baseJWE;
     }
@@ -56,9 +54,6 @@ namespace encrypt {
 
   jose_io_t* encryptIntoJWEIO (json_t* baseJWE, json_t* cek, jose_io_t *next) {
     // We presume that a skeleton base JWE is provided and the cek is suitable
-
-    //joseLibWrapper::logJson("JWE before encryption ", baseJWE);
-    //joseLibWrapper::logJson("CEK before encryption ", cek);
     jose_io_t*      input = jose_jwe_enc_cek_io(nullptr, baseJWE, cek, next);
     return input; 
     //throw failedEncrypt();
@@ -83,7 +78,7 @@ namespace encrypt {
 
           json_array_foreach(key_ops, index, keytype) {
             if (strcmp (json_string_value(keytype), "deriveKey") == 0) {
-              // This becoems the JWK that we will use to create the CEK
+              // This becomes the JWK that we will use to create the CEK
               // We must make a copy and stip some of the fields so as to not
               // affect the CEK (with a wrong algo, etc.)
               json_t*       serverkey = json_copy(key);
