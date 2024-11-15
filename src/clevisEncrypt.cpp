@@ -91,7 +91,7 @@ namespace binding {
       log("URL was " + url);
       log("The secret size was " + std::to_string(secret.size()));
       rethrowIfAllowed();
-      return "Got an exception when sealing a secret.";
+      return "Got an exception when sealing a secret. It's size was " + std::to_string(secret.size());
     }
   }
 
