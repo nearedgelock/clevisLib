@@ -29,11 +29,11 @@ namespace binding {
   const std::string         decomposeAdvertisement(const std::string& adv);
 
   const std::string         getServerKeyFromAdvertisement(const std::string& adv);
-  json_t*                   prepareSealing(const std::string& adv, const std::string& url, json_t* cek);
-  const std::string         sealSecret(const std::string& adv, const std::string& url, const std::string& secret);
+  json_t*                   prepareSealing(const std::string& adv, const std::string& url, json_t* cek, const std::string& ancillary = "");
+  const std::string         sealSecret(const std::string& adv, const std::string& url, const std::string& secret, const std::string& ancillary = "");
 
 #ifdef WEB_TARGET
-  const std::string         sealSecretVal(const std::string& adv, const std::string& url, const emscripten::val& data);
+  const std::string         sealSecretVal(const std::string& adv, const std::string& url, const emscripten::val& data, const std::string& ancillary = "");
 #endif
 
   bool                      validateAdvertisement(const std::string& adv);
@@ -42,7 +42,7 @@ namespace binding {
   // a streaming methodology.
   class encryptLarge {
   public:
-    encryptLarge(const std::string& adv, const std::string& url);
+    encryptLarge(const std::string& adv, const std::string& url, const std::string& ancillary = "");
     ~encryptLarge() { freeJson(); };
 
     const std::string       feedData(const std::string&, bool final = false);

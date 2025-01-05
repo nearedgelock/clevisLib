@@ -95,7 +95,7 @@ namespace encrypt {
     throw failedGetServerKey("");
   }
 
-  json_t* skeletonJWE(const json_t* advKeys, const std::string& url, const std::string& kid) {
+  json_t* skeletonJWE(const json_t* advKeys, const std::string& url, const std::string& kid, const std::string& ancillary) {
     // Create a clevis compatible skeleton JWE
     const std::string     adv_s = printFlatJson(advKeys);
 
@@ -106,7 +106,14 @@ namespace encrypt {
     std::string           jweSkeleton = R"({)"
       R"("protected": {)"
       R"(  "alg": "ECDH-ES",)"
-      R"(  "enc": "A256GCM",)"
+      R"(  "enc": "A256GCM",)";
+
+    if (ancillary.empty() == false) {
+      jweSkeleton += R"(  "neanc": ")";
+      jweSkeleton += ancillary + R"(",)";
+    }
+
+    jweSkeleton +=
       R"(  "clevis": {)"
       R"(    "pin": "tang",)"
       R"(    "tang": {)"
@@ -128,7 +135,7 @@ namespace encrypt {
     json_t*             jwe = json_loads(jweSkeleton.data(), 0, &error);
 
     if (jwe == nullptr) {
-      throw failedEncrypt("Failed to convert skeleton to JSON");
+      throw failedEncrypt("Failed to convert skeleton to JSON - " + jweSkeleton);
     }
     return jwe;
   }

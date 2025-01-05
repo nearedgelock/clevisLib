@@ -52,7 +52,7 @@ namespace binding {
     }
   }
 
-  json_t* prepareSealing(const std::string& adv, const std::string& url, json_t* cek) {
+  json_t* prepareSealing(const std::string& adv, const std::string& url, json_t* cek, const std::string& ancillary) {
     if (cek == nullptr) {
       throw std::runtime_error(std::string("Missing CEK object"));
     }
@@ -64,7 +64,7 @@ namespace binding {
     json_t*                 serverKey = joseLibWrapper::encrypt::getServerKeyFromAdvertisement(payload_j);        // Get the deriveKey
     const std::string       kid = joseLibWrapper::thumbprint(serverKey);    // Its thumbprint
 
-    json_t*                 jwe = joseLibWrapper::encrypt::skeletonJWE(payload_j, url, kid);
+    json_t*                 jwe = joseLibWrapper::encrypt::skeletonJWE(payload_j, url, kid, ancillary);
 
     bool                    keyChangeResult = jose_jwe_enc_jwk(nullptr, jwe, nullptr, serverKey, cek);      // Do the ECMR key exchange
 
@@ -72,13 +72,13 @@ namespace binding {
     return jwe;
   }
 
-  const std::string sealSecret(const std::string& adv, const std::string& url, const std::string& secret) {
+  const std::string sealSecret(const std::string& adv, const std::string& url, const std::string& secret, const std::string& ancillary) {
     joseLibWrapper::logJson("Starting the procedure to seal a secret, size is " + std::to_string(secret.size()), nullptr);
 
     try {
       json_auto_t*          jwe = nullptr;
       json_auto_t*          cek = json_object();
-      jwe = prepareSealing(adv, url, cek);
+      jwe = prepareSealing(adv, url, cek, ancillary);
 
       log("Ready to encrypt");
       //There is some sensitive data that should not go in logs joseLibWrapper::logJson("The skeleton JWE is ", jwe);
@@ -96,13 +96,13 @@ namespace binding {
   }
 
 #ifdef WEB_TARGET
-  const std::string sealSecretVal(const std::string& adv, const std::string& url, const emscripten::val& data) {
+  const std::string sealSecretVal(const std::string& adv, const std::string& url, const emscripten::val& data, const std::string& ancillary) {
     joseLibWrapper::logJson("Starting the procedure to seal a secret using transliteration (from a ArrayBuffer)", nullptr);
 
     try {
       json_auto_t*          jwe = nullptr;
       json_auto_t*          cek = json_object();
-      jwe = prepareSealing(adv, url, cek);
+      jwe = prepareSealing(adv, url, cek, ancillary);
 
       log("Ready to encrypt");
       //There is some sensitive data that should not go in logs joseLibWrapper::logJson("The skeleton JWE is ", jwe);
@@ -148,12 +148,12 @@ namespace binding {
   // cipher-text) size.
   //
   
-  encryptLarge::encryptLarge(const std::string& adv, const std::string& url) {
+  encryptLarge::encryptLarge(const std::string& adv, const std::string& url, const std::string& ancillary) {
     cek = json_object();
 
     try {
       // Perform the advertisment analysis and prepare the CEK (content Encryption Key)
-      jwe = prepareSealing(adv, url, cek);
+      jwe = prepareSealing(adv, url, cek, ancillary);
 
       // Prepare the streaming IO
       output = jose_io_malloc(nullptr, &ct, &ctl);
