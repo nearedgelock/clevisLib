@@ -48,7 +48,12 @@ namespace binding {
     }
   }
 
-  const std::string decrypt::recoveryUrl(bool full) const {
+  std::string decrypt::ancillary() const {
+    json_t*         header = checker.getHeader();
+    return json_string_value(json_object_get(header, "neanc"));
+  }
+
+  std::string decrypt::recoveryUrl(bool full) const {
     if (full == true) {
       return std::string (checker.getUrl() +"/rec/" + kid());
     } else {
@@ -56,11 +61,11 @@ namespace binding {
     }
   }
 
-  const std::string decrypt::transportKey() const {
+  std::string decrypt::transportKey() const {
     return transport.getEphemeralKeyPub();    
   }
 
-  const returnWithStatus_t decrypt::unSealSecret(const std::string responseFromTang) {
+  returnWithStatus_t decrypt::unSealSecret(const std::string responseFromTang) {
     try {
       log("Unseal a secret into a regular std::string");
 
@@ -110,7 +115,7 @@ namespace binding {
     }
   }
 
-  const returnWithStatus_t decrypt::feedDataLarge(const std::string data) {
+  returnWithStatus_t decrypt::feedDataLarge(const std::string data) {
     try {
       if (data.size() != 0) {
         if (input->feed(input, (void *)data.data(), data.size())== false) {
@@ -137,7 +142,7 @@ namespace binding {
   }
 
 #ifdef WEB_TARGET
-  const returnWithStatus_t decrypt::feedDataLargeVal(const emscripten::val& data) {
+  returnWithStatus_t decrypt::feedDataLargeVal(const emscripten::val& data) {
     try {
       // Convert JavaScript array to std::vector<char> using vecFromJSArray
       std::vector<uint8_t>  dataVector = emscripten::vecFromJSArray<uint8_t>(data);

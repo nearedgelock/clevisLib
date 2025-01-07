@@ -43,16 +43,17 @@ namespace binding {
     decrypt(std::string jwe, bool streamMode = false, bool b64encode = true);
     ~decrypt() { freeJson(); };
 
-    const std::string                       recoveryUrl(bool full = true) const;                  // The complete URL needed to access the tang rec api, including the kid and query string
-    const std::string                       kid() const { return json_string_value(checker.getKid()); }; // The key ID
-    const std::string                       transportKey() const;                                 // This is the payload of the POST request sent as the rec api call to tang
-    const returnWithStatus_t                unSealSecret(const std::string responseFromTang);     // The tang interaction on JS side provides the reply here
+    std::string                             ancillary() const;                                    // The 'neanc' field of the protected header as a string
+    std::string                             recoveryUrl(bool full = true) const;                  // The complete URL needed to access the tang rec api, including the kid and query string
+    std::string                             kid() const { return json_string_value(checker.getKid()); }; // The key ID
+    std::string                             transportKey() const;                                 // This is the payload of the POST request sent as the rec api call to tang
+    returnWithStatus_t                      unSealSecret(const std::string responseFromTang);     // The tang interaction on JS side provides the reply here
 
     void                                    addCEK(json_t* c) { cek = c; };                       // For testing purpose.
     void                                    setupLarge(const std::string responseFromTang);       // Setup the object for streaming mode (supporting large data set).
-    const returnWithStatus_t                feedDataLarge(const std::string data);                // Partial ciphertext
+    returnWithStatus_t                      feedDataLarge(const std::string data);                // Partial ciphertext
 #ifdef WEB_TARGET
-    const returnWithStatus_t                feedDataLargeVal(const emscripten::val& data);
+    returnWithStatus_t                      feedDataLargeVal(const emscripten::val& data);
 #endif
     bool                                    checkTag(const std::string tag);                     // Presumably, all the ciphetext was provided and the only thinhg left to so is to check the tag
     std::string                             getLeftOver() const;
