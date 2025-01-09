@@ -52,8 +52,8 @@ namespace joseLibWrapper {
   const std::string printFlatJson(const json_t* val);
 
   json_t*           generateKey(const json_t* crv = nullptr, bool forSigning = false);
-  json_t*           keyExchange(const json_t* key1, const json_t* key2, bool defaultAlgo = false);
-  json_t*           keyExchange(const std::string& key1, const json_t* key2, bool defaultAlgo = false);
+  json_t*           keyExchange(const json_t* local, const json_t* remote, bool defaultAlgo = false);
+  json_t*           keyExchange(const std::string& local, const json_t* remote, bool defaultAlgo = false);
   void              mergeHeaderIntoProtected(json_t* jwe);
   void              removePrivate(json_t* key);
   json_t*           sign(json_t* payload, json_t* sign);

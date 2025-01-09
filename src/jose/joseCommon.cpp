@@ -283,10 +283,10 @@ namespace joseLibWrapper {
     }
   };
 
-  json_t* keyExchange(const json_t* key1, const json_t* key2, bool defaultAlgo) {
+  json_t* keyExchange(const json_t* local, const json_t* remote, bool defaultAlgo) {
     json_auto_t*      exchangedKey = nullptr;
 
-    exchangedKey = jose_jwk_exc(nullptr, key1, key2);
+    exchangedKey = jose_jwk_exc(nullptr, local, remote);
     if (exchangedKey != nullptr) {
       return json_incref(exchangedKey);
     }
@@ -294,8 +294,8 @@ namespace joseLibWrapper {
     throw failedGenerateKey();
   }
 
-  json_t* keyExchange(const std::string& key1, const json_t* key2, bool defaultAlgo) {
-    return keyExchange(extractB64ToJson(key1, true), key2, defaultAlgo);
+  json_t* keyExchange(const std::string& local, const json_t* remote, bool defaultAlgo) {
+    return keyExchange(extractB64ToJson(local, true), remote, defaultAlgo);
   }
 
   void mergeHeaderIntoProtected(json_t* jwe) {
