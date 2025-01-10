@@ -295,7 +295,7 @@ namespace joseLibWrapper {
   }
 
   json_t* keyExchange(const std::string& local, const json_t* remote, bool defaultAlgo) {
-    return keyExchange(extractB64ToJson(local, false), remote, defaultAlgo);
+    return keyExchange(extractB64ToJson(local, true), remote, defaultAlgo);
   }
 
   void mergeHeaderIntoProtected(json_t* jwe) {

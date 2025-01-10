@@ -36,10 +36,10 @@ namespace binding {
   }
 
   // The advertisement as received verbatim from the server. It is a serialize JSON string with just the payload element
-  const std::string getServerKeyFromAdvertisement(const std::string& adv) {
+  const std::string getServerKeyFromAdvertisement(const std::string& adv, bool signing, bool keepOps) {
     try {
       json_auto_t*            payload_j = joseLibWrapper::encrypt::decomposeAdvertisement(adv);
-      json_t*                 serverKey = joseLibWrapper::encrypt::getServerKeyFromAdvertisement(payload_j);
+      json_t*                 serverKey = joseLibWrapper::encrypt::getServerKeyFromAdvertisement(payload_j, signing, keepOps);
 
       joseLibWrapper::encrypt::skeletonJWE(payload_j, "http://example.com", "Some KID");
 

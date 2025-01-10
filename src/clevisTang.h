@@ -21,8 +21,8 @@
 #include <jansson.h>
 
 namespace binding {
-  const returnWithStatus_t      createJWKAdvertisement(const std::string& jwk, const std::string& signKey);
-  const returnWithStatus_t      keyExchange(const std::string& jwk, const std::string& req);
+  returnWithStatus_t      createJWKAdvertisement(const std::string& jwk, const std::string& signKey);
+  returnWithStatus_t      keyExchange(const std::string& jwk, const std::string& req);
 } // namespace binding
 
 

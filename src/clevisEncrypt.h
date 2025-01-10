@@ -28,7 +28,7 @@ extern "C" {
 namespace binding {
   const std::string         decomposeAdvertisement(const std::string& adv);
 
-  const std::string         getServerKeyFromAdvertisement(const std::string& adv);
+  const std::string         getServerKeyFromAdvertisement(const std::string& adv, bool signing = false, bool keepOps = false);
   json_t*                   prepareSealing(const std::string& adv, const std::string& url, json_t* cek, const std::string& ancillary = "");
   const std::string         sealSecret(const std::string& adv, const std::string& url, const std::string& secret, const std::string& ancillary = "");
 

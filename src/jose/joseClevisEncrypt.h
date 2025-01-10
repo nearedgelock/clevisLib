@@ -25,7 +25,7 @@ namespace encrypt {
 
   json_t*           decomposeAdvertisement(const std::string& adv) ;
   json_t*           encryptIntoJWE (json_t* baseJWE, json_t* cek, void* payload, std::size_t size);
-  json_t*           getServerKeyFromAdvertisement(const json_t* adv);
+  json_t*           getServerKeyFromAdvertisement(const json_t* adv, bool signing = false, bool keepOps = false);
   json_t*           skeletonJWE(const json_t* advKeys, const std::string& url, const std::string& kid, const std::string& ancillary = "");
   bool              validateAdvertisement(const json_t* adv);
 

@@ -60,7 +60,7 @@ namespace encrypt {
   }
 
   // Return a pointer to an existing server key if found
-  json_t* getServerKeyFromAdvertisement(const json_t* adv) {
+  json_t* getServerKeyFromAdvertisement(const json_t* adv, bool signing, bool keepOps) {
     bool                    result = validateAdvertisement(adv);
 
     if (result == true) {
@@ -68,6 +68,7 @@ namespace encrypt {
       // We want to extract the deriveKey
       size_t                index;
       json_t*               key;
+      const std::string     desiredKeyType = (signing ? "verify" : "deriveKey");
 
       json_array_foreach(json_object_get(adv, "keys"), index, key) {
         json_t*             key_ops = json_object_get(key, "key_ops");
@@ -77,14 +78,18 @@ namespace encrypt {
           json_t*           keytype;
 
           json_array_foreach(key_ops, index, keytype) {
-            if (strcmp (json_string_value(keytype), "deriveKey") == 0) {
+            if (strcmp (json_string_value(keytype), desiredKeyType.data()) == 0) {
               // This becomes the JWK that we will use to create the CEK
               // We must make a copy and stip some of the fields so as to not
               // affect the CEK (with a wrong algo, etc.)
-              json_t*       serverkey = json_copy(key);
-              json_object_del(serverkey, "alg");
-              json_object_del(serverkey, "key_ops");
-              return serverkey;
+              if (keepOps == false) {
+                json_t*       serverkey = json_copy(key);
+                json_object_del(serverkey, "alg");
+                json_object_del(serverkey, "key_ops");
+                return serverkey;
+              } else {
+                return key;
+              }
               break;
             }
           }

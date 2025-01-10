@@ -21,7 +21,7 @@
 
 namespace binding {
 
-  const returnWithStatus_t createJWKAdvertisement(const std::string& jwk, const std::string& signKey) {
+  returnWithStatus_t createJWKAdvertisement(const std::string& jwk, const std::string& signKey) {
     returnWithStatus_t   result;
 
     if ( (jwk.empty() == true) or (signKey.empty() == true) ) {
@@ -78,7 +78,7 @@ namespace binding {
     resultSign = sign(joseLibWrapper::printFlatJson(payload), signKey);
     if (resultSign.success == false) {
       result.success = false;
-      result.msg = "Failure signing the advertisement paylaod";
+      result.msg = "Failure signing the advertisement payload";
       return result;
     }
 
@@ -87,7 +87,7 @@ namespace binding {
     return result;
   }
 
-const returnWithStatus_t keyExchange(const std::string& jwk, const std::string& req) {
+  returnWithStatus_t keyExchange(const std::string& jwk, const std::string& req) {
     returnWithStatus_t        result;
     json_error_t              error;
     json_auto_t*              jwk_j = json_loads(jwk.data(), 0, &error);
