@@ -159,7 +159,7 @@ namespace binding {
       output = jose_io_malloc(nullptr, &ct, &ctl);
       input = jose_jwe_enc_cek_io(nullptr, jwe, cek, output);
 
-      if ( (jwe == nullptr) or (output == nullptr) or ( input == nullptr) ) {
+      if ( isValid() == false ) {
         throw std::runtime_error("One of the expected object were not created");
       }
     } catch (std::exception& exc) {
@@ -167,6 +167,15 @@ namespace binding {
       rethrowIfAllowed();
     }
   }
+
+  bool encryptLarge::isValid() const {
+    if ( (jwe == nullptr) or (output == nullptr) or ( input == nullptr) ) {
+      return false;
+    }
+
+    return true;
+  }
+
 
   const std::string encryptLarge::feedData(const std::string& data, bool final) {
     bool                retval = input->feed(input, data.data() , data.size());
@@ -188,6 +197,9 @@ namespace binding {
 #ifdef WEB_TARGET
   const std::string encryptLarge::feedDataVal(const emscripten::val& data, bool final) {
     //joseLibWrapper::logJson("Starting the procedure to seal a secret using transliteration (from a ArrayBuffer)", nullptr);
+    if ( isValid() == false ) {
+      return "Error, encryptor is not properly constructed";
+    }
 
     try {
       // Convert JavaScript array to std::vector<char> using vecFromJSArray

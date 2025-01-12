@@ -142,6 +142,7 @@ EMSCRIPTEN_BINDINGS(clevisLib) {
 
   emscripten::class_<binding::encryptLarge>("Encryptor")
     .constructor<const std::string, const std::string, const std::string>()
+    .function("isValid", &binding::encryptLarge::isValid)
     .function("feedData", &binding::encryptLarge::feedData)
     .function("feedDataVal", &binding::encryptLarge::feedDataVal)
     .function("finalize", &binding::encryptLarge::finalize)
@@ -150,7 +151,7 @@ EMSCRIPTEN_BINDINGS(clevisLib) {
     .function("getJWEIV", &binding::encryptLarge::getJWEIV)
     .function("getJWECiphertext", &binding::encryptLarge::getJWECiphertext)
     .function("getJWETag", &binding::encryptLarge::getJWETag)
-    .function("printInfo", &binding::decrypt::printInfo)
+    .function("printInfo", &binding::encryptLarge::printInfo)
     ;
 }
 #endif

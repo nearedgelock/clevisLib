@@ -45,6 +45,8 @@ namespace binding {
     encryptLarge(const std::string& adv, const std::string& url, const std::string& ancillary = "");
     ~encryptLarge() { freeJson(); };
 
+    bool                    isValid() const;
+
     const std::string       feedData(const std::string&, bool final = false);
 #ifdef WEB_TARGET
     const std::string       feedDataVal(const emscripten::val& data, bool final);
