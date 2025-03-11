@@ -50,7 +50,13 @@ namespace binding {
 
   std::string decrypt::ancillary() const {
     json_t*         header = checker.getHeader();
-    return json_string_value(json_object_get(header, "neanc"));
+    if (header != nullptr) {
+      json_t*       neanc = json_object_get(header, "neanc");
+      if (neanc != nullptr) {
+        return json_string_value(neanc);
+      }
+    }
+    return "";
   }
 
   std::string decrypt::recoveryUrl(bool full) const {
