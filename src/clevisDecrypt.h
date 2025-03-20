@@ -45,7 +45,7 @@ namespace binding {
 
     std::string                             ancillary() const;                                    // The 'neanc' field of the protected header as a string
     std::string                             recoveryUrl(bool full = true) const;                  // The complete URL needed to access the tang rec api, including the kid and query string
-    std::string                             kid() const { return json_string_value(checker.getKid()); }; // The key ID
+    std::string                             kid() const { if(checker.getKid() != nullptr) return json_string_value(checker.getKid()); return ""; }; // The key ID
     std::string                             transportKey() const;                                 // This is the payload of the POST request sent as the rec api call to tang
     returnWithStatus_t                      unSealSecret(const std::string responseFromTang);     // The tang interaction on JS side provides the reply here
 
