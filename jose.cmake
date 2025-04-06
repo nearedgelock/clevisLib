@@ -41,7 +41,7 @@ endif()
 # Dependencies
 set(MESON_PKG_CONFIG_PATH
   "${FETCHCONTENT_BASE_DIR}/jansson-build/install/lib/pkgconfig"
-  "${FETCHCONTENT_BASE_DIR}/openssl-install/lib/pkgconfig"
+  "${FETCHCONTENT_BASE_DIR}/openssl-install/lib64/pkgconfig"
   "${FETCHCONTENT_BASE_DIR}/botan-build/lib/pkgconfig"
   "${FETCHCONTENT_BASE_DIR}/zlib-build"
 )
