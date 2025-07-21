@@ -93,7 +93,7 @@ else()
   # Set WASM target - For browser
   set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES 
     SUFFIX ".js"
-    LINK_FLAGS "-fexceptions -lembind -s WASM=1 -s MODULARIZE=1 -s ENVIRONMENT=web -s ASSERTIONS=1 -s EXPORT_NAME=createModule -s ERROR_ON_UNDEFINED_SYMBOLS=1"
+    LINK_FLAGS "-fexceptions -lembind -s WASM=1 -s MODULARIZE=1 -s ENVIRONMENT=web,node -s ASSERTIONS=1 -s EXPORT_NAME=createModule -s ERROR_ON_UNDEFINED_SYMBOLS=1"
 )
 
 
