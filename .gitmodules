@@ -4,5 +4,5 @@
 	branch = main
 [submodule "jose"]
 	path = jose
-	url = git@github.com:clauderobi/jose.git
+	url = https://github.com/clauderobi/jose.git
 	branch = master
