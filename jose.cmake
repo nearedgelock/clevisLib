@@ -59,6 +59,9 @@ execute_process(
   COMMAND meson setup  ${MESON_SETUP_ARGS} . ${CMAKE_CURRENT_SOURCE_DIR}/jose     
   RESULT_VARIABLE JOSE_SETUP_RESULT
 )
+if(NOT JOSE_SETUP_RESULT EQUAL 0)
+  message(FATAL_ERROR "meson setup of jose failed (${JOSE_SETUP_RESULT}). pkg-config path was: ${MESON_PKG_CONFIG_PATH_ARG}")
+endif()
 
 include_directories(${jose_BINARY_DIR}/install/include)
 link_directories(${jose_BINARY_DIR}/lib)
