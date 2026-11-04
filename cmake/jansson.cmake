@@ -3,7 +3,7 @@
 FetchContent_Declare(
   jansson
   GIT_REPOSITORY https://github.com/akheron/jansson.git
-  GIT_TAG v2.14
+  GIT_TAG v2.15.1
 )
 set(JANSSON_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(JANSSON_BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
