@@ -16,6 +16,9 @@ endif()
 
 option(BUILD_EXECUTABLE "Build an executable binary" ${BUILD_EXECUTABLE_DEFAULT})
 option(NATIVE "Build using the native / local compiler" ${NATIVE_DEFAULT})
+option(CLEVISLIB_FETCH_DEPS
+  "Download and build OpenSSL, jansson, Botan and zlib ourselves. Set OFF to use builds provided by the consumer (found through CMAKE_PREFIX_PATH / OPENSSL_ROOT_DIR)"
+  ON)
 
 set(CMAKE_CXX_STANDARD 20)
 
@@ -59,13 +62,23 @@ include (jose.cmake)
 message (STATUS "Done with including 3rd party libraries. We now need to find them....")
 #set(CMAKE_FIND_DEBUG_MODE TRUE)
 
+# Same calls whether the deps were fetched by us (their install prefixes were
+# added to CMAKE_PREFIX_PATH by addExternal.cmake) or provided by the consumer.
 find_package(PkgConfig REQUIRED) 
-find_package(Botan REQUIRED PATHS ${botan_BINARY_DIR}/lib/cmake/Botan-3.5.0)
-find_package(OpenSSL REQUIRED)
+
+set(OPENSSL_USE_STATIC_LIBS TRUE)
+find_package(OpenSSL 3.0 REQUIRED COMPONENTS Crypto)
+
+find_package(Botan 3 CONFIG REQUIRED)
 
 #set(CMAKE_SIZEOF_VOID_P "")   # Required to avoid a failure with jansson when check for 32/64 bitness. Hopefully this is not impactful
 
-find_package(jansson REQUIRED PATHS ${FETCHCONTENT_BASE_DIR}/jansson-build/install/lib/cmake/jansson)
+find_package(jansson CONFIG REQUIRED)
+
+set(ZLIB_USE_STATIC_LIBS ON)
+find_package(ZLIB REQUIRED)
+
+message(STATUS "Using OpenSSL ${OPENSSL_VERSION} from ${OPENSSL_CRYPTO_LIBRARY}")
 
 #
 # Our sources

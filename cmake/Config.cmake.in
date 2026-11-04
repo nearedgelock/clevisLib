@@ -12,19 +12,41 @@ if(NOT TARGET libjose_static)
     )
 endif()
 
-#include(CMakeFindDependencyMacro)
-#find_dependency(ZLIB REQUIRED)
-#find_dependency(jansson REQUIRED)
-#find_dependency(Botan REQUIRED)
-#find_dependency(OpenSSL REQUIRED)
+# Our dependencies are NOT installed with clevisLib: the consuming project
+# provides them (one single copy for the whole executable). Reuse its targets
+# when they already exist, otherwise locate them through its CMAKE_PREFIX_PATH /
+# OPENSSL_ROOT_DIR.
+include(CMakeFindDependencyMacro)
+
+if(NOT TARGET OpenSSL::Crypto)
+  if(NOT DEFINED OPENSSL_USE_STATIC_LIBS)
+    set(OPENSSL_USE_STATIC_LIBS TRUE)
+  endif()
+  find_dependency(OpenSSL 3.0 COMPONENTS Crypto)
+endif()
+
+if(NOT TARGET Botan::Botan-static)
+  find_dependency(Botan 3 CONFIG)
+endif()
+
+if(NOT TARGET jansson::jansson)
+  find_dependency(jansson CONFIG)
+endif()
+
+if(NOT TARGET ZLIB::ZLIB)
+  if(NOT DEFINED ZLIB_USE_STATIC_LIBS)
+    set(ZLIB_USE_STATIC_LIBS ON)
+  endif()
+  find_dependency(ZLIB)
+endif()
 
 # Re-establish the link dependencies
 set_property(TARGET clevisLib::clevisLib APPEND PROPERTY
   INTERFACE_LINK_LIBRARIES 
-    zlib
     jansson::jansson
     Botan::Botan-static
     OpenSSL::Crypto
+    ZLIB::ZLIB
 )
 
 set(@PROJECT_NAME@_FOUND TRUE)

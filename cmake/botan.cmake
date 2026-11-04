@@ -102,6 +102,8 @@ else()
   message(STATUS "Botan already built, skipping build step. We found ${botan_BINARY_DIR}/lib/libbotan-3.a")
 endif()
 
+list(APPEND CLEVISLIB_DEP_PREFIXES ${botan_BINARY_DIR})
+
 
 
 

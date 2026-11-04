@@ -46,3 +46,4 @@ else()
   message(STATUS "jansson already built, skipping build step")
 endif()    
 
+list(APPEND CLEVISLIB_DEP_PREFIXES ${jansson_BINARY_DIR}/install)

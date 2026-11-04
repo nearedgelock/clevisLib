@@ -18,10 +18,13 @@ if(NOT openssl_POPULATED)
   if(EMSCRIPTEN)
     set(OPENSSL_CONFIG_OPTIONS
       --prefix=${OPENSSL_INSTALL_DIR}
+      --libdir=lib
       linux-generic32
+      no-apps
       no-asm
       no-shared
       no-afalgeng
+      no-comp
       no-engine
       no-dynamic-engine
       no-tests
@@ -30,6 +33,7 @@ if(NOT openssl_POPULATED)
       no-weak-ssl-ciphers
       no-ktls
       no-static-engine
+      no-zlib
       CC=emcc
       CXX=em++
       CFLAGS="-O3"
@@ -38,6 +42,9 @@ if(NOT openssl_POPULATED)
   else () 
     set(OPENSSL_CONFIG_OPTIONS
       --prefix=${OPENSSL_INSTALL_DIR}
+      --libdir=lib
+      no-apps
+      no-comp
       no-deprecated
       no-docs
       no-tests
@@ -46,6 +53,7 @@ if(NOT openssl_POPULATED)
       no-ktls
       no-static-engine
       no-shared
+      no-zlib
     )
   endif()
 
@@ -73,10 +81,10 @@ if(NOT openssl_POPULATED)
   endif()
 endif()
 
-# Set OpenSSL paths manually
-set(OPENSSL_ROOT_DIR ${openssl_SOURCE_DIR})
-set(OPENSSL_INCLUDE_DIR ${openssl_SOURCE_DIR}/include)
-set(OPENSSL_CRYPTO_LIBRARY ${openssl_SOURCE_DIR}/libcrypto.a)
-set(OPENSSL_SSL_LIBRARY ${openssl_SOURCE_DIR}/libssl.a)
+# Point FindOpenSSL at the installed copy (not the in-source build tree)
+set(OPENSSL_ROOT_DIR ${OPENSSL_INSTALL_DIR})
+set(OPENSSL_INCLUDE_DIR ${OPENSSL_INSTALL_DIR}/include)
+set(OPENSSL_CRYPTO_LIBRARY ${OPENSSL_INSTALL_DIR}/lib/libcrypto.a)
+set(OPENSSL_SSL_LIBRARY ${OPENSSL_INSTALL_DIR}/lib/libssl.a)
 
-set(ENV{PKG_CONFIG_PATH} "${OPENSSL_INSTALL_DIR}/lib/pkgconfig:$ENV{PKG_CONFIG_PATH}")
+list(APPEND CLEVISLIB_DEP_PREFIXES ${OPENSSL_INSTALL_DIR})

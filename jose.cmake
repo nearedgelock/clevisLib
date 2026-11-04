@@ -38,13 +38,16 @@ else()
   list(APPEND MESON_SETUP_ARGS "--cross-file=${CMAKE_CURRENT_BINARY_DIR}/jose/wasm-cross-meson.txt")
 endif()
 
-# Dependencies
-set(MESON_PKG_CONFIG_PATH
-  "${FETCHCONTENT_BASE_DIR}/jansson-build/install/lib/pkgconfig"
-  "${FETCHCONTENT_BASE_DIR}/openssl-install/lib64/pkgconfig"
-  "${FETCHCONTENT_BASE_DIR}/botan-build/lib/pkgconfig"
-  "${FETCHCONTENT_BASE_DIR}/zlib-build"
-)
+# Dependencies - Same prefixes as the ones used by find_package(), so jose is
+# built against the same OpenSSL / jansson / zlib as clevisLib.
+set(MESON_PKG_CONFIG_PATH "")
+foreach(prefix IN LISTS CLEVISLIB_DEP_PREFIXES)
+  list(APPEND MESON_PKG_CONFIG_PATH
+    "${prefix}/lib/pkgconfig"
+    "${prefix}/lib64/pkgconfig"
+    "${prefix}/share/pkgconfig"
+  )
+endforeach()
 
 string(JOIN ":" MESON_PKG_CONFIG_PATH_ARG ${MESON_PKG_CONFIG_PATH})
 list(APPEND MESON_SETUP_ARGS "--pkg-config-path=${MESON_PKG_CONFIG_PATH_ARG}")

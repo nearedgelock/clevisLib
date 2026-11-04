@@ -62,13 +62,10 @@ if(NOT zlib_POPULATED)
   endif()
 endif()
 
-# Set up zlib variables for the rest of the project
+# Point FindZLIB at the installed copy; the ZLIB::ZLIB target is now created by
+# find_package(ZLIB) in the top level CMakeLists.txt
 set(ZLIB_INCLUDE_DIR "${ZLIB_INSTALL_DIR}/include")
 set(ZLIB_LIBRARY "${ZLIB_INSTALL_DIR}/lib/libz.a")
 
-add_library(ZLIB::ZLIB STATIC IMPORTED)
-set_target_properties(ZLIB::ZLIB PROPERTIES
-  IMPORTED_LOCATION "${ZLIB_LIBRARY}"
-  INTERFACE_INCLUDE_DIRECTORIES "${ZLIB_INCLUDE_DIR}"
-)
+list(APPEND CLEVISLIB_DEP_PREFIXES ${ZLIB_INSTALL_DIR})
 
